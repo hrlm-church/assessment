@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import Welcome from './components/Welcome';
+import Hero from './components/Hero';
+import GettingStarted from './components/GettingStarted';
+import EmailCapture from './components/EmailCapture';
+import AboutAssessment from './components/AboutAssessment';
 import Assessment from './components/Assessment';
 import Results from './components/Results';
-import { assessmentCategories } from './data/assessmentData';
 
 function App() {
-  const [currentView, setCurrentView] = useState('welcome');
+  const [currentView, setCurrentView] = useState('hero');
   const [responses, setResponses] = useState({});
 
   // Load saved responses from localStorage
@@ -23,41 +25,48 @@ function App() {
     }
   }, [responses]);
 
-  const handleStartAssessment = () => {
-    setCurrentView('assessment');
-  };
-
   const handleCompleteAssessment = (finalResponses) => {
     setResponses(finalResponses);
     setCurrentView('results');
   };
 
   const handleRestart = () => {
-    if (confirm('Are you sure you want to restart? This will clear all your responses.')) {
+    if (confirm('Are you sure you want to restart? This will clear all your responses and start over.')) {
       setResponses({});
       localStorage.removeItem('assessmentResponses');
-      setCurrentView('welcome');
+      localStorage.removeItem('userInfo');
+      setCurrentView('hero');
     }
-  };
-
-  const handleContinue = () => {
-    setCurrentView('assessment');
   };
 
   return (
     <div className="min-h-screen">
-      {currentView === 'welcome' && (
-        <Welcome
-          onStart={handleStartAssessment}
-          onContinue={handleContinue}
-          hasExistingResponses={Object.keys(responses).length > 0}
+      {currentView === 'hero' && (
+        <Hero onNext={() => setCurrentView('gettingStarted')} />
+      )}
+      {currentView === 'gettingStarted' && (
+        <GettingStarted
+          onNext={() => setCurrentView('emailCapture')}
+          onBack={() => setCurrentView('hero')}
+        />
+      )}
+      {currentView === 'emailCapture' && (
+        <EmailCapture
+          onNext={() => setCurrentView('about')}
+          onBack={() => setCurrentView('gettingStarted')}
+        />
+      )}
+      {currentView === 'about' && (
+        <AboutAssessment
+          onNext={() => setCurrentView('assessment')}
+          onBack={() => setCurrentView('emailCapture')}
         />
       )}
       {currentView === 'assessment' && (
         <Assessment
           initialResponses={responses}
           onComplete={handleCompleteAssessment}
-          onBack={() => setCurrentView('welcome')}
+          onBack={() => setCurrentView('about')}
         />
       )}
       {currentView === 'results' && (
