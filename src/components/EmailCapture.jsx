@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import AOS from 'aos';
+import { supabase } from '../lib/supabase';
 
 function EmailCapture({ onNext, onBack }) {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ function EmailCapture({ onNext, onBack }) {
     maritalStatus: ''
   });
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     AOS.init({ duration: 1000, easing: 'ease-in-out', once: true });
@@ -36,11 +38,43 @@ function EmailCapture({ onNext, onBack }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      localStorage.setItem('userInfo', JSON.stringify(formData));
-      onNext();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
+    try {
+      // Create new assessment record in Supabase
+      const { data, error } = await supabase
+        .from('assessments')
+        .insert([
+          {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            role: formData.role,
+            marital_status: formData.maritalStatus,
+            responses: {},
+            completed: false
+          }
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating assessment:', error);
+        setErrors({ submit: 'Failed to save your information. Please try again.' });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Pass the assessment ID to parent component
+      onNext(data.id);
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setErrors({ submit: 'An unexpected error occurred. Please try again.' });
+      setIsSubmitting(false);
     }
   };
 
@@ -154,20 +188,28 @@ function EmailCapture({ onNext, onBack }) {
                   </div>
                 </div>
 
+                {errors.submit && (
+                  <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                    <p className="text-red-600 text-sm">{errors.submit}</p>
+                  </div>
+                )}
+
                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-6 border-t border-slate-200">
                   <button
                     type="button"
                     onClick={onBack}
-                    className="text-slate-600 hover:text-primary font-medium transition-colors"
+                    disabled={isSubmitting}
+                    className="text-slate-600 hover:text-primary font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     ← Back
                   </button>
                   <button
                     type="submit"
-                    className="py-3 px-8 inline-flex items-center gap-2 font-semibold tracking-wide border align-middle duration-500 text-base text-center bg-primary hover:bg-primary-dark border-primary hover:border-primary-dark text-white rounded-md shadow-md hover:shadow-lg"
+                    disabled={isSubmitting}
+                    className="py-3 px-8 inline-flex items-center gap-2 font-semibold tracking-wide border align-middle duration-500 text-base text-center bg-primary hover:bg-primary-dark border-primary hover:border-primary-dark text-white rounded-md shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Next
-                    <span>→</span>
+                    {isSubmitting ? 'Saving...' : 'Next'}
+                    {!isSubmitting && <span>→</span>}
                   </button>
                 </div>
               </form>

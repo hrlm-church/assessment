@@ -1,12 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { assessmentCategories, scoreLabels } from '../data/assessmentData';
+import { supabase } from '../lib/supabase';
 
-function Assessment({ initialResponses, onComplete, onBack }) {
+function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const [responses, setResponses] = useState(initialResponses || {});
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const saveTimeoutRef = useRef(null);
 
   const currentCategory = assessmentCategories[currentCategoryIndex];
   const totalCategories = assessmentCategories.length;
+
+  // Auto-save responses to Supabase (debounced)
+  useEffect(() => {
+    if (!assessmentId || Object.keys(responses).length === 0) return;
+
+    // Clear existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Set new timeout to save after 1 second of inactivity
+    saveTimeoutRef.current = setTimeout(async () => {
+      setIsSaving(true);
+      try {
+        const { error } = await supabase
+          .from('assessments')
+          .update({
+            responses: responses,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', assessmentId);
+
+        if (error) {
+          console.error('Error saving responses:', error);
+        }
+      } catch (err) {
+        console.error('Unexpected error saving:', err);
+      } finally {
+        setIsSaving(false);
+      }
+    }, 1000);
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [responses, assessmentId]);
 
   const handleScoreChange = (questionIndex, score) => {
     const key = `${currentCategory.id}_${questionIndex}`;
@@ -62,12 +104,20 @@ function Assessment({ initialResponses, onComplete, onBack }) {
                 Category {currentCategoryIndex + 1} of {totalCategories}
               </p>
             </div>
-            <button
-              onClick={onBack}
-              className="text-sm text-gray-600 hover:text-primary font-medium transition-colors"
-            >
-              ← Back to Home
-            </button>
+            <div className="flex items-center gap-4">
+              {isSaving && (
+                <span className="text-xs text-gray-500 flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                  Saving...
+                </span>
+              )}
+              <button
+                onClick={onBack}
+                className="text-sm text-gray-600 hover:text-primary font-medium transition-colors"
+              >
+                ← Back to Home
+              </button>
+            </div>
           </div>
 
           {/* Overall Progress */}
