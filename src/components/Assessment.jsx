@@ -25,6 +25,23 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
     return count + 1;
   };
 
+  const getCurrentSectionQuestionCount = () => {
+    return currentCategory.questions.length;
+  };
+
+  const getSectionIcon = (categoryId) => {
+    const icons = {
+      godliness: 'G',
+      home_life: 'H',
+      preaching: 'P',
+      shepherding: 'S',
+      evangelism: 'E',
+      leadership: 'L',
+      gcc_alignment: 'A'
+    };
+    return icons[categoryId] || categoryId.charAt(0).toUpperCase();
+  };
+
   // Auto-save responses to Supabase (debounced)
   useEffect(() => {
     if (!assessmentId || Object.keys(responses).length === 0) return;
@@ -114,43 +131,55 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const navigateToSection = (index) => {
     setCurrentCategoryIndex(index);
     setIsMobileMenuOpen(false);
+    // Update URL hash
+    const sectionId = assessmentCategories[index].id;
+    if (window.location.hash !== `#${sectionId}`) {
+      window.history.replaceState(null, '', `#${sectionId}`);
+    }
   };
+
+  // Sync hash with current section on mount and navigation
+  useEffect(() => {
+    const sectionId = currentCategory.id;
+    if (window.location.hash !== `#${sectionId}`) {
+      window.history.replaceState(null, '', `#${sectionId}`);
+    }
+  }, [currentCategoryIndex, currentCategory.id]);
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex">
       {/* Left Sidebar - Desktop/Tablet */}
-      <aside className="hidden lg:block fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-[#E5E7EB] overflow-y-auto">
+      <aside className="hidden lg:block fixed left-0 top-0 bottom-0 w-60 bg-[#F9FAFB] border-r border-[#E5E7EB] overflow-y-auto">
         <div className="p-6">
           <h3 className="text-sm font-semibold text-[#18181B] mb-4">Assessment Sections</h3>
-          <nav className="space-y-2">
+          <nav className="space-y-1">
             {assessmentCategories.map((cat, index) => {
               const progress = getSectionProgress(index);
               const isCurrent = index === currentCategoryIndex;
+              const progressPercent = (progress.answered / progress.total) * 100;
 
               return (
                 <button
                   key={cat.id}
                   onClick={() => navigateToSection(index)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-md text-left transition-all ${
+                  className={`relative w-full flex items-center justify-between px-3 py-2 rounded-md text-left transition-all ${
                     isCurrent
-                      ? 'bg-[#EEF2FF] text-[#6366F1]'
-                      : 'text-[#71717A] hover:bg-[#F9FAFB]'
+                      ? 'bg-white shadow-sm font-semibold text-[#18181B] border-l-[3px] border-[#6366F1] pl-[9px]'
+                      : 'text-[#64748B] hover:bg-white hover:shadow-sm hover:translate-x-[2px] border-l-[3px] border-transparent pl-[9px]'
                   }`}
                 >
-                  <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                    progress.isComplete
-                      ? 'bg-[#DCFCE7] text-[#059669]'
-                      : isCurrent
-                      ? 'bg-[#6366F1] text-white'
-                      : 'bg-[#F3F4F6] text-[#A1A1AA]'
-                  }`}>
-                    {progress.isComplete ? '✓' : index + 1}
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span className="flex-shrink-0 w-5 h-5 text-xs font-medium text-[#71717A]">
+                      {getSectionIcon(cat.id)}
+                    </span>
+                    <span className="text-sm truncate">{cat.title}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{cat.title}</div>
-                    <div className="text-xs text-[#A1A1AA]">
-                      {progress.answered} of {progress.total}
-                    </div>
+                  {/* Mini progress bar */}
+                  <div className="flex-shrink-0 h-1 w-8 rounded bg-[#E5E7EB] overflow-hidden">
+                    <div
+                      className="h-full bg-[#6366F1] transition-all duration-300"
+                      style={{ width: `${progressPercent}%` }}
+                    />
                   </div>
                 </button>
               );
@@ -168,7 +197,7 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
       )}
 
       {/* Mobile Drawer */}
-      <aside className={`lg:hidden fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-[#E5E7EB] overflow-y-auto z-50 transform transition-transform ${
+      <aside className={`lg:hidden fixed left-0 top-0 bottom-0 w-60 bg-[#F9FAFB] border-r border-[#E5E7EB] overflow-y-auto z-50 transform transition-transform ${
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="p-6">
@@ -181,35 +210,34 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
               ✕
             </button>
           </div>
-          <nav className="space-y-2">
+          <nav className="space-y-1">
             {assessmentCategories.map((cat, index) => {
               const progress = getSectionProgress(index);
               const isCurrent = index === currentCategoryIndex;
+              const progressPercent = (progress.answered / progress.total) * 100;
 
               return (
                 <button
                   key={cat.id}
                   onClick={() => navigateToSection(index)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-md text-left transition-all ${
+                  className={`relative w-full flex items-center justify-between px-3 py-2 rounded-md text-left transition-all ${
                     isCurrent
-                      ? 'bg-[#EEF2FF] text-[#6366F1]'
-                      : 'text-[#71717A] hover:bg-[#F9FAFB]'
+                      ? 'bg-white shadow-sm font-semibold text-[#18181B] border-l-[3px] border-[#6366F1] pl-[9px]'
+                      : 'text-[#64748B] hover:bg-white hover:shadow-sm hover:translate-x-[2px] border-l-[3px] border-transparent pl-[9px]'
                   }`}
                 >
-                  <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                    progress.isComplete
-                      ? 'bg-[#DCFCE7] text-[#059669]'
-                      : isCurrent
-                      ? 'bg-[#6366F1] text-white'
-                      : 'bg-[#F3F4F6] text-[#A1A1AA]'
-                  }`}>
-                    {progress.isComplete ? '✓' : index + 1}
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span className="flex-shrink-0 w-5 h-5 text-xs font-medium text-[#71717A]">
+                      {getSectionIcon(cat.id)}
+                    </span>
+                    <span className="text-sm truncate">{cat.title}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{cat.title}</div>
-                    <div className="text-xs text-[#A1A1AA]">
-                      {progress.answered} of {progress.total}
-                    </div>
+                  {/* Mini progress bar */}
+                  <div className="flex-shrink-0 h-1 w-8 rounded bg-[#E5E7EB] overflow-hidden">
+                    <div
+                      className="h-full bg-[#6366F1] transition-all duration-300"
+                      style={{ width: `${progressPercent}%` }}
+                    />
                   </div>
                 </button>
               );
@@ -219,7 +247,7 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 lg:ml-72">
+      <div className="flex-1 lg:ml-60">
         {/* Sticky Top Bar */}
         <div className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]">
           {/* Thin Progress Line */}
@@ -249,17 +277,17 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
                 </button>
               </div>
 
-              {/* Right: Question Counter */}
+              {/* Right: Section Question Counter */}
               <div className="text-[13px] text-[#71717A]">
-                Question {getCurrentQuestionNumber()} of {getTotalQuestions()}
+                Question 1 of {getCurrentSectionQuestionCount()}
               </div>
             </div>
 
             {/* Center: Section Title + Subtitle */}
             <div className="text-center">
-              <h2 className="text-2xl font-semibold text-[#18181B] mb-1">
+              <h1 className="text-2xl font-semibold text-[#18181B] mb-1">
                 {currentCategory.title}
-              </h2>
+              </h1>
               <p className="text-sm text-[#71717A]">
                 Answer as others who know you best would see you.
               </p>
@@ -275,22 +303,21 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
           <div className="mx-auto max-w-[720px] space-y-6">
             {currentCategory.questions.map((question, index) => {
               const currentScore = getScore(index);
-              const questionNumber = getCurrentQuestionNumber() + index;
 
               return (
                 <div
                   key={index}
-                  className="group bg-white border border-[#E5E7EB] rounded-lg p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+                  role="group"
+                  aria-labelledby={`question-${currentCategory.id}-${index}`}
+                  className="group bg-white border border-[#E5E7EB] rounded-lg p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 focus-within:shadow-md focus-within:-translate-y-1"
                 >
-                  {/* Question Header with Badge */}
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="flex-shrink-0 flex items-center justify-center w-10 h-10 bg-[#6366F1] text-white rounded-full text-sm font-semibold">
-                      {questionNumber}
-                    </div>
-                    <h3 className="flex-1 text-base font-medium text-[#18181B] leading-relaxed pt-1">
-                      {question}
-                    </h3>
-                  </div>
+                  {/* Question Text */}
+                  <h3
+                    id={`question-${currentCategory.id}-${index}`}
+                    className="text-base font-medium text-[#18181B] leading-relaxed mb-6"
+                  >
+                    {question}
+                  </h3>
 
                   {/* Response Options - Desktop Horizontal */}
                   <div className="hidden md:block">
@@ -349,7 +376,7 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
         </div>
 
         {/* Fixed Footer Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 lg:left-72 bg-white border-t border-[#E5E7EB] py-4">
+        <div className="fixed bottom-0 left-0 right-0 lg:left-60 bg-white border-t border-[#E5E7EB] py-4">
           <div className="max-w-[720px] mx-auto px-6 flex justify-between items-center gap-4">
             <button
               onClick={handlePrevious}
