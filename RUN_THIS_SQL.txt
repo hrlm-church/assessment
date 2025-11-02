@@ -1,0 +1,50 @@
+═══════════════════════════════════════════════════════════════
+  COPY AND RUN THIS SQL IN SUPABASE DASHBOARD
+═══════════════════════════════════════════════════════════════
+
+⚠️  I don't have permission to alter your database tables directly.
+    You need to run this SQL manually (it takes 30 seconds).
+
+📍 WHERE TO RUN THIS:
+   1. Go to: https://supabase.com/dashboard/project/axrjfkyoaydcuezcaoce
+   2. Click "SQL Editor" in the left sidebar
+   3. Click "New Query"
+   4. Copy EVERYTHING below this line
+   5. Paste it into the query box
+   6. Click "Run" (or press Ctrl+Enter)
+
+───────────────────────────────────────────────────────────────
+COPY FROM HERE ↓
+───────────────────────────────────────────────────────────────
+
+-- Add contact info fields to assessments table for direct data collection
+ALTER TABLE assessments
+ADD COLUMN IF NOT EXISTS first_name TEXT,
+ADD COLUMN IF NOT EXISTS last_name TEXT,
+ADD COLUMN IF NOT EXISTS email TEXT,
+ADD COLUMN IF NOT EXISTS phone TEXT,
+ADD COLUMN IF NOT EXISTS role TEXT,
+ADD COLUMN IF NOT EXISTS marital_status TEXT,
+ADD COLUMN IF NOT EXISTS consent BOOLEAN DEFAULT false,
+ADD COLUMN IF NOT EXISTS responses JSONB DEFAULT '{}'::jsonb,
+ADD COLUMN IF NOT EXISTS completed BOOLEAN DEFAULT false;
+
+-- Make contact_id and session_id nullable
+ALTER TABLE assessments
+ALTER COLUMN contact_id DROP NOT NULL,
+ALTER COLUMN session_id DROP NOT NULL;
+
+-- Add index on email for lookups
+CREATE INDEX IF NOT EXISTS idx_assessments_email ON assessments(email);
+
+───────────────────────────────────────────────────────────────
+COPY UP TO HERE ↑
+───────────────────────────────────────────────────────────────
+
+✅ AFTER RUNNING:
+   - You should see "Success. No rows returned"
+   - Refresh your assessment app
+   - Try filling out the form again
+   - It will work! 🎉
+
+═══════════════════════════════════════════════════════════════
