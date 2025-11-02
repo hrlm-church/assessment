@@ -1,182 +1,182 @@
-// Assessment data with new copy - DO NOT CHANGE UI STYLING
+// Assessment data - DO NOT CHANGE UI STYLING
 export const assessmentCategories = [
   {
     id: 'godliness',
-    title: 'Godliness',
-    description: 'Life with God that shapes life with people.',
+    title: 'Are You Godly?',
+    description: '',
     questions: [
-      'I pursue Christ through regular disciplines (prayer, Scripture, confession, fasting).',
-      'People close to me see consistent humility.',
-      'I\'m patient, kind, and gracious in conflict.',
-      'My lifestyle shows emotional and physical self-control.',
-      'Leaders see me growing in understanding and applying the gospel.',
-      'My giving to the local church has been faithful.',
-      'I\'m not marked by love of money, power, or status; I\'m respected at work/community.',
-      'I walk transparently with trusted brothers for accountability.'
+      'Do people see you as one who exhibits a personal hunger to pursue Christ through spiritual disciplines like prayer, study, fasting, and confession?',
+      'Would those closest to you say they see clear and consistent patterns of humility in your life?',
+      'Can you be counted upon to be patient, kind, and gracious in dealing with others?',
+      'Would your pastor, physician and recent physical exams validate that you care for yourself physically and emotionally, and that you exercise self-control with food and alcohol?',
+      'Do the leaders in your church generally view you as growing in your understanding and application of the gospel?',
+      'If a church member looked at your finances, would they find a history of faithful financial giving to the local church?',
+      'In the last year, has anyone ascribed an unrighteous love of money to you, or suggested you are inordinately drawn towards power and influence? Are you respected at your job and in your community?',
+      'Do you possess a group of godly men with whom you are transparently accountable?'
     ],
     questionKeys: [
-      'godliness_disciplines',
-      'godliness_humility',
-      'godliness_patience',
-      'godliness_self_control',
-      'godliness_gospel_growth',
-      'godliness_generosity',
-      'godliness_money_power',
-      'godliness_accountability'
+      'godliness_1',
+      'godliness_2',
+      'godliness_3',
+      'godliness_4',
+      'godliness_5',
+      'godliness_6',
+      'godliness_7',
+      'godliness_8'
     ]
   },
   {
     id: 'home_life',
-    title: 'Home Life',
-    description: 'Health at home that supports ministry.',
+    title: 'Is your home healthy?',
+    description: '(1 Tim 3:4-5, 4:16; Eph 5:25-33, 6:4)',
     questions: [
-      'My wife and I are aligned on big issues (parenting, finances, priorities, ministry).',
-      'My wife experiences tangible care and loving leadership.',
-      'She understands and supports the cost of ministry.',
-      'I lead our family\'s spiritual rhythms.',
-      'I discipline my children with love, without harshness, building lasting trust.',
-      'We can make financial sacrifices if needed for ministry.',
-      'Our home is hospitable; people feel welcome.',
-      'We steward family finances wisely.',
-      'My wife (and kids, if applicable) affirm my call.',
-      'My private life matches my public words.'
+      'Do you experience consistent unity and alignment with your wife across the more significant marriage challenges (parenting, finances, life/family priorities, ministry)?',
+      'Is the nurture, care for, and loving leadership of your wife clearly evident to your wife and to others?',
+      'Is your wife supporting your pursuit of church planting and does she recognize and prayerfully accept the claim it will make upon her?',
+      'Are you known as one who demonstrates leadership initiative in the spiritual life of your family?',
+      'Would your wife and leaders say you apply loving discipline with your children without exasperating harshness, and in a manner that cultivates enduring relationships with them?',
+      'When looking at debt and income, are you in a position to, if necessary, make financial sacrifices to start a church or step into a ministry role?',
+      'Are you known as one who consistently welcomes others warmly into his home?',
+      'Do you manage the personal finances of you home with faithful stewardship?',
+      'Does your wife (and where applicable, your kids) affirm your call to plant a church?',
+      'Would your family confirm that your private life seems consistent with your call to public ministry?'
     ],
     questionKeys: [
-      'home_alignment',
-      'home_care',
-      'home_support_call',
-      'home_spiritual_rhythms',
-      'home_parenting',
-      'home_financial_margin',
-      'home_hospitality',
-      'home_stewardship',
-      'home_affirmation',
-      'home_integrity'
+      'home_life_1',
+      'home_life_2',
+      'home_life_3',
+      'home_life_4',
+      'home_life_5',
+      'home_life_6',
+      'home_life_7',
+      'home_life_8',
+      'home_life_9',
+      'home_life_10'
     ]
   },
   {
     id: 'preaching',
-    title: 'Preaching',
-    description: 'Clarity, gospel centrality, and application.',
+    title: 'Can You Preach?',
+    description: '(Act 10:42; Rom 2:21, 10:14-15;1 Cor 1:17-23, 9:16-23; Gal 1:9-10; 2 Tim 3:14 - 4:2; 1 Tim 4:16)',
     questions: [
-      'I desire and am able to proclaim the gospel to believers and non-believers.',
-      'Leaders affirm my grasp of the gospel\'s storyline and centrality.',
-      'My life patterns do not contradict my preaching.',
-      'I\'m committed to expositional preaching and its principles.',
-      'People stay engaged when I teach.',
-      'I receive positive feedback on organization and clarity.',
-      'I connect Scripture to everyday life.'
+      'Do you have a compelling desire and ability to proclaim the gospel to both believers and non-believers?',
+      'Would others (particularly your leaders) say you display a competent grasp of the biblical sweep of the gospel, its centrality to preaching, and pointing people to apply it faithfully?',
+      'Are you known as one who applies theology and the gospel to your own life in ways that does not contradict your preaching?',
+      'Do you exhibit an understanding of, and primary commitment to, expositional preaching (including its underlying theological, hermeneutic, and homiletic principles)?',
+      'Are you experienced as someone who is capable of holding the interest of the people when you share God\'s Word?',
+      'Do you receive positive feedback on the organization and clarity of your content?',
+      'Do you demonstrate the consistent ability to see and communicate how God\'s Word applies to the people where they live?'
     ],
     questionKeys: [
-      'preach_desire',
-      'preach_centrality',
-      'preach_integrity',
-      'preach_expositional',
-      'preach_engagement',
-      'preach_clarity',
-      'preach_application'
+      'preaching_1',
+      'preaching_2',
+      'preaching_3',
+      'preaching_4',
+      'preaching_5',
+      'preaching_6',
+      'preaching_7'
     ]
   },
   {
     id: 'shepherding',
-    title: 'Shepherding',
-    description: 'Care and courage for people in real life.',
+    title: 'Can You Shepherd?',
+    description: '(Psalm 78:72; Jer 3:15; 23:4; Ezek 34:7-24; Matt 9:36; John 10:1-16; Acts 20:28-32; Eph 4:11-16; 1 Peter 5:1-4)',
     questions: [
-      'I apply Scripture wisely to people\'s needs.',
-      'I consistently encourage and name God\'s work in others.',
-      'I move toward people in trial and crisis.',
-      'People open up to me about hurts and struggles.',
-      'I can point to fruit from discipling others.',
-      'I speak truth in love, including gentle correction.',
-      'I spot cultural drift and pastorally re-center on Scripture.'
+      'Are you known as possessing an aptitude for understanding people and ministering to their needs through wise application of Scripture?',
+      'Do you have a reputation for consistently encourages others and pointing out God\'s work in their lives?',
+      'Do you think you have an instinct to care for people in times of trial and crisis?',
+      'Are people drawn to open up their lives and hurts with you?',
+      'Can you point to specific fruit of you discipling other people towards spiritual growth?',
+      'Are you known as one who will offer an honest opinion and, when necessary, lovingly admonish another person?',
+      'Are you able to discern touchpoints where the culture is influencing the church (identity, how people change, nature of the church, etc.) while wisely and pastorally redirecting people back to Scripture?'
     ],
     questionKeys: [
-      'shep_wisdom',
-      'shep_encourage',
-      'shep_crisis_care',
-      'shep_access',
-      'shep_discipleship_fruit',
-      'shep_admonish',
-      'shep_culture_discern'
+      'shepherding_1',
+      'shepherding_2',
+      'shepherding_3',
+      'shepherding_4',
+      'shepherding_5',
+      'shepherding_6',
+      'shepherding_7'
     ]
   },
   {
     id: 'evangelism',
-    title: 'Evangelistic Focus',
-    description: 'A heart for the lost and the nations.',
+    title: 'Do You Love the Lost?',
+    description: '(Matt 10:5-11, 18:12-14; Luke 15;1-24, 19:10; 1 Cor 9:19-23)',
     questions: [
-      'I understand the people and culture where I hope to serve.',
-      'I\'ve recently shared the gospel with a non-believer.',
-      'I see mission as reaching the lost, not just building a service.',
-      'I connect outsiders to church people and activities.',
-      'I maintain friendships with non-Christians.',
-      'My reputation among outsiders commends me for pastoral work.',
-      'I value multiplying disciples, leaders, elders, and churches.',
-      'I contextualize without compromising Scripture.',
-      'I care about the nations beyond my church.'
+      'Do you exhibit a strong/growing understanding of your local community and culture within the place you want to plant or pastor?',
+      'Can you point to recent examples of sharing the gospel with non-believers?',
+      'Do you see mission as not just establishing a local church, but reaching the lost in your new community?',
+      'Are you known as a leader who invites people outside the church to connect with people and activities of the church?',
+      'Can you point to a circle of non-believing friends right now?',
+      'Do you have a reputation with those outside of the church (through your job, neighbors, school, etc.) that commends you to the role of church planter or pastor?',
+      'Would your convictions prioritize the importance of building a local church ecosystem where multiplication (disciples, leaders, elders and churches) is a primary measure of health and flourishing?',
+      'Do you understand how to contextualize ministry to the place and people to which God has called you?',
+      'Does your orientation towards Scripture and mission enable you to see beyond your church or tribe and motivate you to play a part in reaching the lost in other nations?'
     ],
     questionKeys: [
-      'ev_context',
-      'ev_recent_share',
-      'ev_beyond_service',
-      'ev_connect_outsiders',
-      'ev_friends',
-      'ev_reputation',
-      'ev_multiplication',
-      'ev_contextualize',
-      'ev_nations'
+      'evangelism_1',
+      'evangelism_2',
+      'evangelism_3',
+      'evangelism_4',
+      'evangelism_5',
+      'evangelism_6',
+      'evangelism_7',
+      'evangelism_8',
+      'evangelism_9'
     ]
   },
   {
     id: 'leadership',
-    title: 'Leadership',
-    description: 'Vision, resilience, and team building.',
+    title: 'Do You Lead Well?',
+    description: '(Rom 2:6-7, 12:8; 2 Tim 1:7-14, 2:2; Col 4:6; Heb 12:1; Prov 28:1; 1 Cor 15:10; Eph 4:11-16)',
     questions: [
-      'I cast vision that stirs faith.',
-      'I build rapport and trust quickly.',
-      'I show steady, resilient follow-through.',
-      'My leadership is clear, gospel-driven, and appropriately passionate.',
-      'I identify and address what truly matters.',
-      'I value a healthy plurality of elders.',
-      'I mobilize people to do quality work together.',
-      'I make complex things simple and motivating.',
-      'Leaders recognize my leadership and communication gifts.'
+      'Do you exhibit the capacity to inspire faith from others by casting vision?',
+      'Are you known as one who establishes confidence and personal connection easily when interacting with others?',
+      'Would your leaders say you exhibit patterns of steadfast, tenacious resilience?',
+      'How would you rate yourself on conveying gospel-driven clarity, enthusiasm, and passion in your leadership?',
+      'Are you known as one who can identify, prioritize, and address critical issues as a leader?',
+      'Do you understand plurality and place a high value on building and experiencing a healthy eldership?',
+      'Are you effective at engaging others to get quality work done?',
+      'Do people know as someone who can make things simple and clear while also inspiring motivation in others?',
+      'Is your gifting as a leader and sincere communicator recognized by the leaders of your church?'
     ],
     questionKeys: [
-      'lead_vision',
-      'lead_rapport',
-      'lead_resilience',
-      'lead_clarity',
-      'lead_priorities',
-      'lead_plurality',
-      'lead_execute',
-      'lead_simplify',
-      'lead_recognized'
+      'leadership_1',
+      'leadership_2',
+      'leadership_3',
+      'leadership_4',
+      'leadership_5',
+      'leadership_6',
+      'leadership_7',
+      'leadership_8',
+      'leadership_9'
     ]
   },
   {
     id: 'gcc_alignment',
-    title: 'GCC Alignment',
-    description: 'Shared doctrine, culture, and mission.',
+    title: 'Do We Feel Like Family?',
+    description: '(Prov 17:17; John 13:34-35; Rom 12:10; 2 Cor 9; Eph 4:1-6,15; Heb 10:24; 1 Peter 4:8)',
     questions: [
-      'I embrace interdependence among churches as biblical.',
-      'I value gifted extra-local leaders who serve churches.',
-      'I have a current relationship with a GCC pastor/church.',
-      'I understand and am drawn to GCC culture and fruit.',
-      'I\'ve connected with GCC pastors at events.',
-      'I want to receive from and contribute to a network.',
-      'After reviewing GCC values/attributes, I\'m eager to explore planting with GCC.',
-      'My wife and I can affirm the GCC Statement of Faith.'
+      'Do you understand the biblical doctrine of interdependence and do you hold partnership between churches as a theological conviction?',
+      'Do you affirm the need for churches to unite through the help of gifted extra-local leaders appointed to help church leaders plant churches?',
+      'Can you point to a relationship you have at present with a GCC leader or with a GCC church?',
+      'Do you believe you understand the culture of GCC and are you drawn to the leaders and fruit?',
+      'Have you had the opportunity to connect with other GCC pastors at GCC events?',
+      'Would others affirm that you possess a vison to both receive from and contribute to a Collective/Network?',
+      'After surveying GCC core values and the Attributes of a GCC church, are you more eager to explore planting with GCC?',
+      'Are you and your wife able to affirm the doctrinal positions of the GCC Statement of Faith?'
     ],
     questionKeys: [
-      'gcc_interdependence',
-      'gcc_extra_local',
-      'gcc_relationship',
-      'gcc_culture_fit',
-      'gcc_events',
-      'gcc_receive_contribute',
-      'gcc_eager',
-      'gcc_statement'
+      'gcc_alignment_1',
+      'gcc_alignment_2',
+      'gcc_alignment_3',
+      'gcc_alignment_4',
+      'gcc_alignment_5',
+      'gcc_alignment_6',
+      'gcc_alignment_7',
+      'gcc_alignment_8'
     ]
   }
 ];
