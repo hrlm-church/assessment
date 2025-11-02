@@ -7,6 +7,7 @@ function EmailCapture({ onNext, onBack }) {
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
     role: '',
     maritalStatus: '',
     consent: false
@@ -50,6 +51,7 @@ function EmailCapture({ onNext, onBack }) {
             first_name: formData.firstName,
             last_name: formData.lastName,
             email: formData.email,
+            phone: formData.phone || null,
             role: formData.role,
             marital_status: formData.maritalStatus,
             consent: formData.consent,
@@ -158,6 +160,21 @@ function EmailCapture({ onNext, onBack }) {
               {errors.email && (
                 <p className="text-[13px] text-[#DC2626] mt-1">{errors.email}</p>
               )}
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label className="block text-[13px] font-medium text-[#18181B] mb-2">
+                Phone Number <span className="text-[#71717A]">(optional)</span>
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 text-[15px] bg-white border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all"
+                placeholder="+1 (555) 000-0000"
+              />
             </div>
 
             {/* Role */}
