@@ -29,17 +29,13 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
     return currentCategory.questions.length;
   };
 
-  const getSectionIcon = (categoryId) => {
-    const icons = {
-      godliness: 'G',
-      home_life: 'H',
-      preaching: 'P',
-      shepherding: 'S',
-      evangelism: 'E',
-      leadership: 'L',
-      gcc_alignment: 'A'
-    };
-    return icons[categoryId] || categoryId.charAt(0).toUpperCase();
+  const getSectionState = (categoryIndex) => {
+    const progress = getSectionProgress(categoryIndex);
+    const isCurrent = categoryIndex === currentCategoryIndex;
+
+    if (isCurrent) return 'active';
+    if (categoryIndex < currentCategoryIndex && progress.isComplete) return 'completed';
+    return 'upcoming';
   };
 
   // Auto-save responses to Supabase (debounced)
@@ -148,44 +144,61 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex">
-      {/* Left Sidebar - Desktop/Tablet */}
-      <aside className="hidden lg:block fixed left-0 top-0 bottom-0 w-60 bg-[#F9FAFB] border-r border-[#E5E7EB] overflow-y-auto">
-        <div className="p-6">
-          <h3 className="text-sm font-semibold text-[#18181B] mb-4">Assessment Sections</h3>
-          <nav className="space-y-1">
+      {/* Left Sidebar - Desktop/Tablet - Progress Ladder */}
+      <aside className="hidden lg:block sticky top-0 h-screen w-60 bg-[#F9FAFB] border-r border-[#E5E7EB] overflow-y-auto shadow-sm">
+        <nav className="pt-[5rem] pb-8 px-4">
+          <div className="relative">
             {assessmentCategories.map((cat, index) => {
-              const progress = getSectionProgress(index);
-              const isCurrent = index === currentCategoryIndex;
-              const progressPercent = (progress.answered / progress.total) * 100;
+              const state = getSectionState(index);
+              const isLast = index === assessmentCategories.length - 1;
+
+              // Circle styles based on state
+              const circleClasses = {
+                active: 'bg-[#6366F1] border-[#6366F1] shadow-sm',
+                completed: 'bg-[#6366F1] border-[#6366F1]',
+                upcoming: 'bg-transparent border-[#D1D5DB]'
+              }[state];
+
+              // Label styles based on state
+              const labelClasses = {
+                active: 'font-bold text-[#6366F1]',
+                completed: 'font-medium text-[#71717A]',
+                upcoming: 'font-medium text-[#A1A1AA]'
+              }[state];
+
+              // Connector line style based on state
+              const connectorOpacity = {
+                active: 'opacity-40',
+                completed: 'opacity-25',
+                upcoming: 'opacity-100'
+              }[state];
+
+              const connectorColor = state === 'upcoming' ? 'bg-[#E5E7EB]' : 'bg-[#6366F1]';
 
               return (
-                <button
-                  key={cat.id}
-                  onClick={() => navigateToSection(index)}
-                  className={`relative w-full flex items-center justify-between px-3 py-2 rounded-md text-left transition-all ${
-                    isCurrent
-                      ? 'bg-white shadow-sm font-semibold text-[#18181B] border-l-[3px] border-[#6366F1] pl-[9px]'
-                      : 'text-[#64748B] hover:bg-white hover:shadow-sm hover:translate-x-[2px] border-l-[3px] border-transparent pl-[9px]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="flex-shrink-0 w-5 h-5 text-xs font-medium text-[#71717A]">
-                      {getSectionIcon(cat.id)}
+                <div key={cat.id} className="relative">
+                  <button
+                    onClick={() => navigateToSection(index)}
+                    className="group relative flex items-center gap-3 py-3 w-full text-left transition-all hover:translate-x-[2px] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:ring-offset-2 rounded"
+                  >
+                    {/* Circle Node */}
+                    <div className={`relative z-10 flex-shrink-0 w-[14px] h-[14px] rounded-full border-2 transition-all ${circleClasses}`} />
+
+                    {/* Label */}
+                    <span className={`text-sm transition-all ${labelClasses}`}>
+                      {cat.title}
                     </span>
-                    <span className="text-sm truncate">{cat.title}</span>
-                  </div>
-                  {/* Mini progress bar */}
-                  <div className="flex-shrink-0 h-1 w-8 rounded bg-[#E5E7EB] overflow-hidden">
-                    <div
-                      className="h-full bg-[#6366F1] transition-all duration-300"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-                </button>
+                  </button>
+
+                  {/* Vertical Connector Line */}
+                  {!isLast && (
+                    <div className={`absolute left-[6px] top-[3rem] w-[2px] h-[calc(100%-3rem)] ${connectorColor} ${connectorOpacity} transition-all`} />
+                  )}
+                </div>
               );
             })}
-          </nav>
-        </div>
+          </div>
+        </nav>
       </aside>
 
       {/* Mobile Menu Overlay */}
@@ -196,12 +209,12 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
         />
       )}
 
-      {/* Mobile Drawer */}
-      <aside className={`lg:hidden fixed left-0 top-0 bottom-0 w-60 bg-[#F9FAFB] border-r border-[#E5E7EB] overflow-y-auto z-50 transform transition-transform ${
+      {/* Mobile Drawer - Progress Ladder */}
+      <aside className={`lg:hidden fixed left-0 top-0 bottom-0 w-60 bg-[#F9FAFB] border-r border-[#E5E7EB] overflow-y-auto z-50 shadow-sm transform transition-transform ${
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-8">
             <h3 className="text-sm font-semibold text-[#18181B]">Assessment Sections</h3>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
@@ -210,38 +223,58 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
               ✕
             </button>
           </div>
-          <nav className="space-y-1">
-            {assessmentCategories.map((cat, index) => {
-              const progress = getSectionProgress(index);
-              const isCurrent = index === currentCategoryIndex;
-              const progressPercent = (progress.answered / progress.total) * 100;
+          <nav>
+            <div className="relative">
+              {assessmentCategories.map((cat, index) => {
+                const state = getSectionState(index);
+                const isLast = index === assessmentCategories.length - 1;
 
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => navigateToSection(index)}
-                  className={`relative w-full flex items-center justify-between px-3 py-2 rounded-md text-left transition-all ${
-                    isCurrent
-                      ? 'bg-white shadow-sm font-semibold text-[#18181B] border-l-[3px] border-[#6366F1] pl-[9px]'
-                      : 'text-[#64748B] hover:bg-white hover:shadow-sm hover:translate-x-[2px] border-l-[3px] border-transparent pl-[9px]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="flex-shrink-0 w-5 h-5 text-xs font-medium text-[#71717A]">
-                      {getSectionIcon(cat.id)}
-                    </span>
-                    <span className="text-sm truncate">{cat.title}</span>
+                // Circle styles based on state
+                const circleClasses = {
+                  active: 'bg-[#6366F1] border-[#6366F1] shadow-sm',
+                  completed: 'bg-[#6366F1] border-[#6366F1]',
+                  upcoming: 'bg-transparent border-[#D1D5DB]'
+                }[state];
+
+                // Label styles based on state
+                const labelClasses = {
+                  active: 'font-bold text-[#6366F1]',
+                  completed: 'font-medium text-[#71717A]',
+                  upcoming: 'font-medium text-[#A1A1AA]'
+                }[state];
+
+                // Connector line style based on state
+                const connectorOpacity = {
+                  active: 'opacity-40',
+                  completed: 'opacity-25',
+                  upcoming: 'opacity-100'
+                }[state];
+
+                const connectorColor = state === 'upcoming' ? 'bg-[#E5E7EB]' : 'bg-[#6366F1]';
+
+                return (
+                  <div key={cat.id} className="relative">
+                    <button
+                      onClick={() => navigateToSection(index)}
+                      className="group relative flex items-center gap-3 py-3 w-full text-left transition-all hover:translate-x-[2px] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:ring-offset-2 rounded"
+                    >
+                      {/* Circle Node */}
+                      <div className={`relative z-10 flex-shrink-0 w-[14px] h-[14px] rounded-full border-2 transition-all ${circleClasses}`} />
+
+                      {/* Label */}
+                      <span className={`text-sm transition-all ${labelClasses}`}>
+                        {cat.title}
+                      </span>
+                    </button>
+
+                    {/* Vertical Connector Line */}
+                    {!isLast && (
+                      <div className={`absolute left-[6px] top-[3rem] w-[2px] h-[calc(100%-3rem)] ${connectorColor} ${connectorOpacity} transition-all`} />
+                    )}
                   </div>
-                  {/* Mini progress bar */}
-                  <div className="flex-shrink-0 h-1 w-8 rounded bg-[#E5E7EB] overflow-hidden">
-                    <div
-                      className="h-full bg-[#6366F1] transition-all duration-300"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-                </button>
-              );
-            })}
+                );
+              })}
+            </div>
           </nav>
         </div>
       </aside>
