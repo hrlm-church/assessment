@@ -80,8 +80,19 @@ function EmailCapture({ onNext, onBack }) {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="container relative px-4">
+    <section className="relative min-h-screen flex items-center justify-center py-16 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900">
+      {/* Animated Grid Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+        }}></div>
+      </div>
+
+      <div className="container relative px-4 z-10">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -93,14 +104,14 @@ function EmailCapture({ onNext, onBack }) {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring" }}
-              className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg text-4xl mb-6"
+              className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl shadow-lg shadow-purple-500/50 text-4xl mb-6"
             >
               📧
             </motion.div>
-            <h3 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            <h3 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mb-4">
               Your Information
             </h3>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+            <p className="text-gray-300 max-w-2xl mx-auto text-lg">
               Please provide your details to receive your personalized assessment results and free chapter from "Am I Called?".
             </p>
           </motion.div>
@@ -109,114 +120,114 @@ function EmailCapture({ onNext, onBack }) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8 md:p-12"
+            className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8 md:p-12"
           >
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-2">
-                      First Name <span className="text-red-600">*</span>
+                    <label className="block text-sm font-semibold text-white mb-2">
+                      First Name <span className="text-pink-400">*</span>
                     </label>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border ${errors.firstName ? 'border-red-600' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors`}
+                      className={`w-full px-4 py-3 bg-slate-800/50 border ${errors.firstName ? 'border-red-500' : 'border-purple-500/30'} rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors text-white placeholder-gray-500`}
                       placeholder="John"
                     />
-                    {errors.firstName && <p className="text-red-600 text-sm mt-1">{errors.firstName}</p>}
+                    {errors.firstName && <p className="text-red-400 text-sm mt-1">{errors.firstName}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-900 mb-2">
-                      Last Name <span className="text-red-600">*</span>
+                    <label className="block text-sm font-semibold text-white mb-2">
+                      Last Name <span className="text-pink-400">*</span>
                     </label>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border ${errors.lastName ? 'border-red-600' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors`}
+                      className={`w-full px-4 py-3 bg-slate-800/50 border ${errors.lastName ? 'border-red-500' : 'border-purple-500/30'} rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors text-white placeholder-gray-500`}
                       placeholder="Doe"
                     />
-                    {errors.lastName && <p className="text-red-600 text-sm mt-1">{errors.lastName}</p>}
+                    {errors.lastName && <p className="text-red-400 text-sm mt-1">{errors.lastName}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">
-                    Your Email <span className="text-red-600">*</span>
+                  <label className="block text-sm font-semibold text-white mb-2">
+                    Your Email <span className="text-pink-400">*</span>
                   </label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border ${errors.email ? 'border-red-600' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors`}
+                    className={`w-full px-4 py-3 bg-slate-800/50 border ${errors.email ? 'border-red-500' : 'border-purple-500/30'} rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors text-white placeholder-gray-500`}
                     placeholder="john@example.com"
                   />
-                  {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
+                  {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">
-                    Present Role <span className="text-red-600">*</span>
+                  <label className="block text-sm font-semibold text-white mb-2">
+                    Present Role <span className="text-pink-400">*</span>
                   </label>
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border ${errors.role ? 'border-red-600' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors bg-white`}
+                    className={`w-full px-4 py-3 bg-slate-800/50 border ${errors.role ? 'border-red-500' : 'border-purple-500/30'} rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors text-white`}
                   >
-                    <option value="">—Please choose an option—</option>
-                    <option value="plant">I hope to plant a church</option>
-                    <option value="pastor">I want to pastor on a team</option>
-                    <option value="student">I am a Bible or seminary student</option>
-                    <option value="leader">I am a local church leader curious about my calling</option>
+                    <option value="" className="bg-slate-800">—Please choose an option—</option>
+                    <option value="plant" className="bg-slate-800">I hope to plant a church</option>
+                    <option value="pastor" className="bg-slate-800">I want to pastor on a team</option>
+                    <option value="student" className="bg-slate-800">I am a Bible or seminary student</option>
+                    <option value="leader" className="bg-slate-800">I am a local church leader curious about my calling</option>
                   </select>
-                  {errors.role && <p className="text-red-600 text-sm mt-1">{errors.role}</p>}
+                  {errors.role && <p className="text-red-400 text-sm mt-1">{errors.role}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">
-                    Are you married? <span className="text-red-600">*</span>
+                  <label className="block text-sm font-semibold text-white mb-2">
+                    Are you married? <span className="text-pink-400">*</span>
                   </label>
                   <select
                     name="maritalStatus"
                     value={formData.maritalStatus}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border ${errors.maritalStatus ? 'border-red-600' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors bg-white`}
+                    className={`w-full px-4 py-3 bg-slate-800/50 border ${errors.maritalStatus ? 'border-red-500' : 'border-purple-500/30'} rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-colors text-white`}
                   >
-                    <option value="">—Please choose an option—</option>
-                    <option value="married">Married</option>
-                    <option value="single">Single</option>
+                    <option value="" className="bg-slate-800">—Please choose an option—</option>
+                    <option value="married" className="bg-slate-800">Married</option>
+                    <option value="single" className="bg-slate-800">Single</option>
                   </select>
-                  {errors.maritalStatus && <p className="text-red-600 text-sm mt-1">{errors.maritalStatus}</p>}
+                  {errors.maritalStatus && <p className="text-red-400 text-sm mt-1">{errors.maritalStatus}</p>}
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-5 shadow-sm">
+                <div className="bg-gradient-to-br from-purple-950/50 to-slate-900/50 border border-purple-500/30 rounded-2xl p-5 shadow-sm">
                   <div className="flex gap-3">
                     <span className="text-2xl">🔒</span>
-                    <p className="text-sm text-gray-700 mb-0 leading-relaxed">
+                    <p className="text-sm text-gray-300 mb-0 leading-relaxed">
                       Your information is secure and will only be used to send you your assessment results and the free chapter. We respect your privacy.
                     </p>
                   </div>
                 </div>
 
                 {errors.submit && (
-                  <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                    <p className="text-red-600 text-sm">{errors.submit}</p>
+                  <div className="bg-red-950/50 border border-red-500/50 rounded-xl p-4">
+                    <p className="text-red-400 text-sm">{errors.submit}</p>
                   </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-8 border-t border-gray-200">
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-8 border-t border-purple-500/20">
                   <motion.button
                     type="button"
                     whileHover={{ x: -5 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={onBack}
                     disabled={isSubmitting}
-                    className="text-gray-600 hover:text-blue-600 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="text-gray-400 hover:text-purple-400 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     <span>←</span> Back
                   </motion.button>
@@ -225,7 +236,7 @@ function EmailCapture({ onNext, onBack }) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     disabled={isSubmitting}
-                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
+                    className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-2xl shadow-lg shadow-purple-500/50 hover:shadow-xl hover:shadow-purple-500/70 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
                   >
                     {isSubmitting ? 'Saving...' : 'Next'}
                     {!isSubmitting && (
