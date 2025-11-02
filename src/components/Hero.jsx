@@ -8,26 +8,26 @@ function Hero({ onNext }) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
         </svg>
       ),
-      title: 'Research-Backed',
-      description: 'Validated framework from pastoral studies'
+      title: 'Data-informed',
+      description: 'Rooted in Scripture and pastoral wisdom'
     },
     {
       icon: (
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
         </svg>
       ),
-      title: 'Confidential',
-      description: 'Your data remains private and secure'
+      title: 'Community-confirmed',
+      description: 'Designed to be shared with leaders'
     },
     {
       icon: (
         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
-      title: 'Instant Insights',
-      description: 'Receive results immediately'
+      title: 'Next-step guidance',
+      description: 'Receive practical next steps'
     }
   ];
 
@@ -50,12 +50,12 @@ function Hero({ onNext }) {
 
           {/* H1 Title */}
           <h1 className="text-4xl font-semibold tracking-tight text-[#18181B] sm:text-5xl mb-6">
-            Clarify Your Calling
+            Am I Called?
           </h1>
 
           {/* Subheading */}
           <p className="mx-auto max-w-[600px] text-lg text-[#71717A] mb-8">
-            A thoughtful assessment to explore pastoral readiness across seven key dimensions
+            A 7-part discernment assessment rooted in Scripture and pastoral wisdom.
           </p>
 
           {/* CTA Row */}
@@ -64,7 +64,7 @@ function Hero({ onNext }) {
               onClick={onNext}
               className="px-5 py-2.5 bg-[#6366F1] text-white text-sm font-medium rounded-md hover:bg-[#4F46E5] transition-all shadow-sm hover:shadow-md hover:-translate-y-px"
             >
-              Begin Assessment
+              Start Assessment
             </button>
             <button
               className="px-5 py-2.5 bg-transparent text-[#6366F1] text-sm font-medium rounded-md border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-all"
@@ -75,11 +75,11 @@ function Hero({ onNext }) {
 
           {/* Stats Row */}
           <div className="flex items-center justify-center gap-6 text-[13px] text-[#A1A1AA]">
-            <span>700+ responses</span>
+            <span>7 categories</span>
             <span>·</span>
-            <span>7 dimensions</span>
+            <span>5–10 minutes</span>
             <span>·</span>
-            <span>10 minutes</span>
+            <span>Private results</span>
           </div>
         </motion.div>
 
