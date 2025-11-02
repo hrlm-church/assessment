@@ -33,33 +33,36 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900">
-      {/* Navigation Bar */}
-      <nav className="bg-slate-900/95 backdrop-blur-lg border-b border-purple-500/20 sticky top-0 z-50">
+    <div className="min-h-screen bg-[#FAFAFA]">
+      {/* Navigation Header - Minimal, Floating */}
+      <nav className="sticky top-0 z-50 bg-[#FAFAFA]/80 backdrop-blur-lg border-b border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between items-center h-16">
+            {/* Wordmark */}
             <div className="flex items-center">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                Am I Called Assessment
+              <h1 className="text-lg font-semibold text-[#18181B] tracking-tight">
+                Am I Called?
               </h1>
             </div>
-            <div className="flex items-center gap-4">
+
+            {/* Navigation Buttons */}
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setCurrentView('hero')}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                  currentView === 'hero' || currentView === 'gettingStarted' || currentView === 'emailCapture' || currentView === 'about' || currentView === 'assessment' || currentView === 'results'
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/50'
-                    : 'text-gray-300 hover:bg-slate-800 hover:text-white'
+                className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${
+                  currentView !== 'bookRAG'
+                    ? 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm'
+                    : 'bg-transparent text-[#6366F1] border border-[#E5E7EB] hover:bg-[#F9FAFB]'
                 }`}
               >
                 Assessment
               </button>
               <button
                 onClick={() => setCurrentView('bookRAG')}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${
                   currentView === 'bookRAG'
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/50'
-                    : 'text-gray-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm'
+                    : 'bg-transparent text-[#6366F1] border border-[#E5E7EB] hover:bg-[#F9FAFB]'
                 }`}
               >
                 Search Book
