@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './assets/css/tailwind.css';
 import Hero from './components/Hero';
 import GettingStarted from './components/GettingStarted';
 import EmailCapture from './components/EmailCapture';
