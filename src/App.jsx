@@ -6,6 +6,7 @@ import EmailCapture from './components/EmailCapture';
 import AboutAssessment from './components/AboutAssessment';
 import Assessment from './components/Assessment';
 import Results from './components/Results';
+import BookRAG from './components/BookRAG';
 
 function App() {
   const [currentView, setCurrentView] = useState('hero');
@@ -33,6 +34,35 @@ function App() {
 
   return (
     <div className="min-h-screen">
+      {/* Navigation Bar */}
+      <nav className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <h1 className="text-xl font-bold text-gray-900">Am I Called Assessment</h1>
+            </div>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setCurrentView('hero')}
+                className={`px-4 py-2 rounded-lg ${
+                  currentView === 'hero' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Assessment
+              </button>
+              <button
+                onClick={() => setCurrentView('bookRAG')}
+                className={`px-4 py-2 rounded-lg ${
+                  currentView === 'bookRAG' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Search Book
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {currentView === 'hero' && (
         <Hero onNext={() => setCurrentView('gettingStarted')} />
       )}
@@ -68,6 +98,9 @@ function App() {
           responses={responses}
           onRestart={handleRestart}
         />
+      )}
+      {currentView === 'bookRAG' && (
+        <BookRAG />
       )}
     </div>
   );
