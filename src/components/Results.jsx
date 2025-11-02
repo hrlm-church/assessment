@@ -270,7 +270,7 @@ function Results({ assessmentId, responses, onRestart }) {
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#e5e7eb"
+            stroke="#334155"
             strokeWidth={strokeWidth}
             fill="none"
           />
@@ -289,15 +289,26 @@ function Results({ assessmentId, responses, onRestart }) {
         </svg>
         <div className="absolute inset-0 flex items-center justify-center flex-col">
           <span className="text-3xl font-black" style={{ color }}>{score.toFixed(1)}</span>
-          <span className="text-xs text-gray-500">out of 5.0</span>
+          <span className="text-xs text-gray-400">out of 5.0</span>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 py-12 relative">
+      {/* Animated Grid Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+        }}></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <motion.div
@@ -305,10 +316,10 @@ function Results({ assessmentId, responses, onRestart }) {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mb-4">
               Your Assessment Results
             </h1>
-            <p className="text-gray-600 text-lg">Review your scores, identify strengths, and determine next steps</p>
+            <p className="text-gray-300 text-lg">Review your scores, identify strengths, and determine next steps</p>
           </motion.div>
 
           {/* Overall Score Card */}
@@ -316,19 +327,19 @@ function Results({ assessmentId, responses, onRestart }) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 }}
-            className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8 md:p-12 mb-8"
+            className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8 md:p-12 mb-8"
           >
-            <h2 className="text-3xl font-black text-gray-900 mb-8 text-center">Overall Assessment</h2>
+            <h2 className="text-3xl font-black text-white mb-8 text-center">Overall Assessment</h2>
             <div className="flex flex-col md:flex-row items-center justify-center gap-8">
               <ProgressRing score={overallAverage} size={160} />
               <div className="flex-1 max-w-2xl">
                 <div className={`p-6 rounded-2xl border-2 shadow-lg ${
-                  overallAverage >= 4.5 ? 'bg-green-50 border-green-300' :
-                  overallAverage >= 3.5 ? 'bg-blue-50 border-blue-300' :
-                  overallAverage >= 2.5 ? 'bg-amber-50 border-amber-300' :
-                  'bg-red-50 border-red-300'
+                  overallAverage >= 4.5 ? 'bg-green-950/50 border-green-500/50' :
+                  overallAverage >= 3.5 ? 'bg-purple-950/50 border-purple-500/50' :
+                  overallAverage >= 2.5 ? 'bg-amber-950/50 border-amber-500/50' :
+                  'bg-red-950/50 border-red-500/50'
                 }`}>
-                  <p className="text-lg font-medium leading-relaxed text-gray-800">
+                  <p className="text-lg font-medium leading-relaxed text-gray-300">
                     {overallInterpretation.interpretation}
                   </p>
                 </div>
@@ -343,17 +354,17 @@ function Results({ assessmentId, responses, onRestart }) {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8"
+              className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8"
             >
-              <h3 className="text-2xl font-black text-gray-900 mb-6 text-center">Category Overview</h3>
+              <h3 className="text-2xl font-black text-white mb-6 text-center">Category Overview</h3>
               <ResponsiveContainer width="100%" height={350}>
                 <RadarChart data={radarData}>
-                  <PolarGrid stroke="#cbd5e1" />
-                  <PolarAngleAxis dataKey="category" tick={{ fill: '#475569', fontSize: 12 }} />
+                  <PolarGrid stroke="#475569" />
+                  <PolarAngleAxis dataKey="category" tick={{ fill: '#cbd5e1', fontSize: 12 }} />
                   <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fill: '#94a3b8' }} />
-                  <Radar name="Score" dataKey="score" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+                  <Radar name="Score" dataKey="score" stroke="#a855f7" fill="#a855f7" fillOpacity={0.6} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', border: '1px solid #e5e7eb', borderRadius: '12px' }}
+                    contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.95)', border: '1px solid #6b21a8', borderRadius: '12px', color: '#e2e8f0' }}
                   />
                 </RadarChart>
               </ResponsiveContainer>
@@ -364,16 +375,16 @@ function Results({ assessmentId, responses, onRestart }) {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8"
+              className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8"
             >
-              <h3 className="text-2xl font-black text-gray-900 mb-6 text-center">Score Breakdown</h3>
+              <h3 className="text-2xl font-black text-white mb-6 text-center">Score Breakdown</h3>
               <ResponsiveContainer width="100%" height={350}>
                 <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis dataKey="name" tick={{ fill: '#475569', fontSize: 11 }} angle={-45} textAnchor="end" height={100} />
-                  <YAxis domain={[0, 5]} tick={{ fill: '#475569' }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
+                  <XAxis dataKey="name" tick={{ fill: '#cbd5e1', fontSize: 11 }} angle={-45} textAnchor="end" height={100} />
+                  <YAxis domain={[0, 5]} tick={{ fill: '#cbd5e1' }} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', border: '1px solid #e5e7eb', borderRadius: '12px' }}
+                    contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.95)', border: '1px solid #6b21a8', borderRadius: '12px', color: '#e2e8f0' }}
                   />
                   <Bar dataKey="score" radius={[8, 8, 0, 0]}>
                     {barData.map((entry, index) => (
@@ -390,9 +401,9 @@ function Results({ assessmentId, responses, onRestart }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8 mb-8"
+            className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8 mb-8"
           >
-            <h3 className="text-2xl font-black text-gray-900 mb-8 text-center">All Categories</h3>
+            <h3 className="text-2xl font-black text-white mb-8 text-center">All Categories</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6">
               {categoryResults.map((cat, index) => (
                 <motion.div
@@ -403,7 +414,7 @@ function Results({ assessmentId, responses, onRestart }) {
                   className="flex flex-col items-center gap-3"
                 >
                   <ProgressRing score={cat.score.average} size={100} />
-                  <p className="text-sm font-semibold text-gray-700 text-center leading-tight">{cat.title}</p>
+                  <p className="text-sm font-semibold text-gray-300 text-center leading-tight">{cat.title}</p>
                 </motion.div>
               ))}
             </div>
@@ -416,20 +427,20 @@ function Results({ assessmentId, responses, onRestart }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8"
+                className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8"
               >
-                <h3 className="text-2xl font-black text-green-700 mb-6 flex items-center gap-3">
+                <h3 className="text-2xl font-black text-green-400 mb-6 flex items-center gap-3">
                   <span className="text-3xl">✓</span> Your Strengths
                 </h3>
-                <p className="text-gray-600 mb-6">These areas are significant strengths you can leverage in ministry:</p>
+                <p className="text-gray-300 mb-6">These areas are significant strengths you can leverage in ministry:</p>
                 <div className="space-y-4">
                   {strengths.map(cat => (
-                    <div key={cat.id} className="bg-green-50 border-2 border-green-300 rounded-2xl p-5 hover:shadow-lg transition-shadow">
+                    <div key={cat.id} className="bg-green-950/50 border-2 border-green-500/50 rounded-2xl p-5 hover:shadow-lg hover:shadow-green-500/20 transition-shadow">
                       <div className="flex justify-between items-center mb-2">
-                        <h4 className="font-bold text-green-900">{cat.title}</h4>
-                        <span className="text-2xl font-black text-green-700">{cat.score.average.toFixed(2)}</span>
+                        <h4 className="font-bold text-green-300">{cat.title}</h4>
+                        <span className="text-2xl font-black text-green-400">{cat.score.average.toFixed(2)}</span>
                       </div>
-                      <p className="text-sm text-green-700">{cat.description}</p>
+                      <p className="text-sm text-green-300/80">{cat.description}</p>
                     </div>
                   ))}
                 </div>
@@ -441,20 +452,20 @@ function Results({ assessmentId, responses, onRestart }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
-                className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8"
+                className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8"
               >
-                <h3 className="text-2xl font-black text-amber-700 mb-6 flex items-center gap-3">
+                <h3 className="text-2xl font-black text-amber-400 mb-6 flex items-center gap-3">
                   <span className="text-3xl">→</span> Growth Areas
                 </h3>
-                <p className="text-gray-600 mb-6">These areas need attention and development:</p>
+                <p className="text-gray-300 mb-6">These areas need attention and development:</p>
                 <div className="space-y-4">
                   {growthAreas.map(cat => (
-                    <div key={cat.id} className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 hover:shadow-lg transition-shadow">
+                    <div key={cat.id} className="bg-amber-950/50 border-2 border-amber-500/50 rounded-2xl p-5 hover:shadow-lg hover:shadow-amber-500/20 transition-shadow">
                       <div className="flex justify-between items-center mb-2">
-                        <h4 className="font-bold text-amber-900">{cat.title}</h4>
-                        <span className="text-2xl font-black text-amber-700">{cat.score.average.toFixed(2)}</span>
+                        <h4 className="font-bold text-amber-300">{cat.title}</h4>
+                        <span className="text-2xl font-black text-amber-400">{cat.score.average.toFixed(2)}</span>
                       </div>
-                      <p className="text-sm text-amber-700">{cat.description}</p>
+                      <p className="text-sm text-amber-300/80">{cat.description}</p>
                     </div>
                   ))}
                 </div>
@@ -467,49 +478,49 @@ function Results({ assessmentId, responses, onRestart }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8 md:p-12 mb-8"
+            className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8 md:p-12 mb-8"
           >
-            <h3 className="text-3xl font-black text-gray-900 mb-8 text-center">Recommended Next Steps</h3>
+            <h3 className="text-3xl font-black text-white mb-8 text-center">Recommended Next Steps</h3>
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-2xl p-6">
+              <div className="bg-gradient-to-br from-purple-950/50 to-slate-900/50 border-l-4 border-purple-500 rounded-2xl p-6">
                 <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-blue-600 text-white font-bold rounded-full text-xl">1</span>
+                  <span className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold rounded-full text-xl shadow-lg shadow-purple-500/50">1</span>
                   <div>
-                    <h4 className="font-black text-gray-900 mb-2">Reflect & Pray</h4>
-                    <p className="text-gray-700 text-sm leading-relaxed">
+                    <h4 className="font-black text-white mb-2">Reflect & Pray</h4>
+                    <p className="text-gray-300 text-sm leading-relaxed">
                       Take time to pray about these results. Ask God to confirm or clarify your calling.
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-2xl p-6">
+              <div className="bg-gradient-to-br from-purple-950/50 to-slate-900/50 border-l-4 border-purple-500 rounded-2xl p-6">
                 <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-blue-600 text-white font-bold rounded-full text-xl">2</span>
+                  <span className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold rounded-full text-xl shadow-lg shadow-purple-500/50">2</span>
                   <div>
-                    <h4 className="font-black text-gray-900 mb-2">Seek Feedback</h4>
-                    <p className="text-gray-700 text-sm leading-relaxed">
+                    <h4 className="font-black text-white mb-2">Seek Feedback</h4>
+                    <p className="text-gray-300 text-sm leading-relaxed">
                       Ask people who know you well to evaluate you in these categories.
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-2xl p-6">
+              <div className="bg-gradient-to-br from-purple-950/50 to-slate-900/50 border-l-4 border-purple-500 rounded-2xl p-6">
                 <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-blue-600 text-white font-bold rounded-full text-xl">3</span>
+                  <span className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold rounded-full text-xl shadow-lg shadow-purple-500/50">3</span>
                   <div>
-                    <h4 className="font-black text-gray-900 mb-2">Create Development Plan</h4>
-                    <p className="text-gray-700 text-sm leading-relaxed">
+                    <h4 className="font-black text-white mb-2">Create Development Plan</h4>
+                    <p className="text-gray-300 text-sm leading-relaxed">
                       Focus on your growth areas. What specific steps can you take?
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-2xl p-6">
+              <div className="bg-gradient-to-br from-purple-950/50 to-slate-900/50 border-l-4 border-purple-500 rounded-2xl p-6">
                 <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-blue-600 text-white font-bold rounded-full text-xl">4</span>
+                  <span className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold rounded-full text-xl shadow-lg shadow-purple-500/50">4</span>
                   <div>
-                    <h4 className="font-black text-gray-900 mb-2">Connect with Leadership</h4>
-                    <p className="text-gray-700 text-sm leading-relaxed">
+                    <h4 className="font-black text-white mb-2">Connect with Leadership</h4>
+                    <p className="text-gray-300 text-sm leading-relaxed">
                       Reach out to GCC leadership to discuss your results.
                     </p>
                   </div>
@@ -523,14 +534,14 @@ function Results({ assessmentId, responses, onRestart }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
-            className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8"
+            className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8"
           >
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={generatePDF}
-                className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-3"
+                className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-2xl shadow-lg shadow-green-500/50 hover:shadow-xl hover:shadow-green-500/70 transition-all duration-300 flex items-center gap-3"
               >
                 <span className="text-2xl">📄</span>
                 Download PDF Results
@@ -539,12 +550,12 @@ function Results({ assessmentId, responses, onRestart }) {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={onRestart}
-                className="px-8 py-4 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="px-8 py-4 bg-gradient-to-r from-slate-600 to-slate-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 Start New Assessment
               </motion.button>
             </div>
-            <p className="text-center text-sm text-gray-600 mt-6">
+            <p className="text-center text-sm text-gray-400 mt-6">
               Your results have been saved. You can download them as PDF anytime.
             </p>
           </motion.div>
