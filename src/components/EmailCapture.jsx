@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import AOS from 'aos';
 import { supabase } from '../lib/supabase';
 
@@ -79,24 +80,38 @@ function EmailCapture({ onNext, onBack }) {
   };
 
   return (
-    <section className="relative py-16 md:py-24 bg-slate-50">
-      <div className="container relative">
-        <div className="grid grid-cols-1">
-          <div className="text-center mb-10" data-aos="fade-up">
-            <span className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 text-primary rounded-full text-4xl mb-4">
+    <section className="relative min-h-screen flex items-center justify-center py-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="container relative px-4">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring" }}
+              className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg text-4xl mb-6"
+            >
               📧
-            </span>
-            <h3 className="mb-4 md:text-4xl text-3xl md:leading-normal leading-normal font-bold">
+            </motion.div>
+            <h3 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
               Your Information
             </h3>
-            <p className="text-slate-600 max-w-xl mx-auto">
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
               Please provide your details to receive your personalized assessment results and free chapter from "Am I Called?".
             </p>
-          </div>
+          </motion.div>
 
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white shadow-md rounded-md p-8" data-aos="fade-up" data-aos-delay="100">
-              <form onSubmit={handleSubmit} className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="backdrop-blur-xl bg-white/60 rounded-3xl shadow-2xl border border-white/70 p-8 md:p-12"
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-slate-900 mb-2">
@@ -179,10 +194,10 @@ function EmailCapture({ onNext, onBack }) {
                   {errors.maritalStatus && <p className="text-red-600 text-sm mt-1">{errors.maritalStatus}</p>}
                 </div>
 
-                <div className="bg-primary/5 border border-primary/20 rounded-md p-4">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-5 shadow-sm">
                   <div className="flex gap-3">
-                    <span className="text-xl">🔒</span>
-                    <p className="text-sm text-slate-600 mb-0">
+                    <span className="text-2xl">🔒</span>
+                    <p className="text-sm text-gray-700 mb-0 leading-relaxed">
                       Your information is secure and will only be used to send you your assessment results and the free chapter. We respect your privacy.
                     </p>
                   </div>
@@ -194,27 +209,37 @@ function EmailCapture({ onNext, onBack }) {
                   </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-6 border-t border-slate-200">
-                  <button
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-8 border-t border-gray-200">
+                  <motion.button
                     type="button"
+                    whileHover={{ x: -5 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={onBack}
                     disabled={isSubmitting}
-                    className="text-slate-600 hover:text-primary font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="text-gray-600 hover:text-blue-600 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    ← Back
-                  </button>
-                  <button
+                    <span>←</span> Back
+                  </motion.button>
+                  <motion.button
                     type="submit"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     disabled={isSubmitting}
-                    className="py-3 px-8 inline-flex items-center gap-2 font-semibold tracking-wide border align-middle duration-500 text-base text-center bg-primary hover:bg-primary-dark border-primary hover:border-primary-dark text-white rounded-md shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
                   >
                     {isSubmitting ? 'Saving...' : 'Next'}
-                    {!isSubmitting && <span>→</span>}
-                  </button>
+                    {!isSubmitting && (
+                      <motion.span
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        →
+                      </motion.span>
+                    )}
+                  </motion.button>
                 </div>
               </form>
-            </div>
-          </div>
+            </motion.div>
         </div>
       </div>
     </section>
