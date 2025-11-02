@@ -1,21 +1,19 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { supabase } from '../lib/supabase';
 
 function EmailCapture({ onNext, onBack }) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    role: '',
-    maritalStatus: ''
+    consent: false
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
@@ -28,8 +26,7 @@ function EmailCapture({ onNext, onBack }) {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    if (!formData.role) newErrors.role = 'Please select your present role';
-    if (!formData.maritalStatus) newErrors.maritalStatus = 'Please select your marital status';
+    if (!formData.consent) newErrors.consent = 'You must agree to receive emails';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -41,30 +38,33 @@ function EmailCapture({ onNext, onBack }) {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase
-        .from('assessments')
-        .insert([
-          {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            email: formData.email,
-            role: formData.role,
-            marital_status: formData.maritalStatus,
-            responses: {},
-            completed: false
-          }
-        ])
-        .select()
-        .single();
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+      const response = await fetch(`${supabaseUrl}/functions/v1/start-assessment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          consent: formData.consent,
+        }),
+      });
 
-      if (error) {
-        console.error('Error creating assessment:', error);
-        setErrors({ submit: 'Failed to save your information. Please try again.' });
-        setIsSubmitting(false);
-        return;
+      if (!response.ok) {
+        throw new Error('Failed to start assessment');
       }
 
-      onNext(data.id);
+      const data = await response.json();
+
+      // Store session info in localStorage
+      localStorage.setItem('aic_session_id', data.sessionId);
+      localStorage.setItem('aic_assessment_id', data.assessmentId);
+      localStorage.setItem('aic_contact_id', data.contactId);
+      localStorage.setItem('aic_session_token', data.sessionToken);
+
+      onNext(data.assessmentId);
     } catch (err) {
       console.error('Unexpected error:', err);
       setErrors({ submit: 'An unexpected error occurred. Please try again.' });
@@ -84,7 +84,7 @@ function EmailCapture({ onNext, onBack }) {
         >
           <h2 className="text-2xl font-semibold text-[#18181B] mb-4">Your Information</h2>
           <p className="text-[15px] text-[#71717A] max-w-[600px] mx-auto">
-            Please provide your details to receive your personalized assessment results and free chapter from "Am I Called?".
+            Enter your name and email to receive your results and a free chapter from Am I Called?
           </p>
         </motion.div>
 
@@ -157,61 +157,25 @@ function EmailCapture({ onNext, onBack }) {
               )}
             </div>
 
-            {/* Role */}
-            <div>
-              <label className="block text-[13px] font-medium text-[#18181B] mb-2">
-                Present Role <span className="text-[#DC2626]">*</span>
-              </label>
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
-                  errors.role ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
-              >
-                <option value="">—Please choose an option—</option>
-                <option value="plant">I hope to plant a church</option>
-                <option value="pastor">I want to pastor on a team</option>
-                <option value="student">I am a Bible or seminary student</option>
-                <option value="leader">I am a local church leader curious about my calling</option>
-              </select>
-              {errors.role && (
-                <p className="text-[13px] text-[#DC2626] mt-1">{errors.role}</p>
-              )}
-            </div>
-
-            {/* Marital Status */}
-            <div>
-              <label className="block text-[13px] font-medium text-[#18181B] mb-2">
-                Marital Status <span className="text-[#DC2626]">*</span>
-              </label>
-              <select
-                name="maritalStatus"
-                value={formData.maritalStatus}
-                onChange={handleChange}
-                className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
-                  errors.maritalStatus ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
-              >
-                <option value="">—Please choose an option—</option>
-                <option value="married">Married</option>
-                <option value="single">Single</option>
-              </select>
-              {errors.maritalStatus && (
-                <p className="text-[13px] text-[#DC2626] mt-1">{errors.maritalStatus}</p>
-              )}
-            </div>
-
-            {/* Privacy Notice */}
-            <div className="bg-[#F3F4F6] border border-[#E5E7EB] rounded-md p-4">
-              <div className="flex gap-3">
-                <svg className="w-5 h-5 text-[#71717A] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                </svg>
-                <p className="text-[13px] text-[#71717A] leading-relaxed">
-                  Your information is secure and will only be used to send you your assessment results and the free chapter. We respect your privacy.
-                </p>
+            {/* Consent Checkbox */}
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-md p-4">
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  name="consent"
+                  id="consent"
+                  checked={formData.consent}
+                  onChange={handleChange}
+                  className="mt-1 w-4 h-4 text-[#6366F1] border-[#E5E7EB] rounded focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2"
+                />
+                <div className="flex-1">
+                  <label htmlFor="consent" className="text-[13px] text-[#71717A] leading-relaxed cursor-pointer">
+                    I agree to receive emails as described. We'll send occasional resources from Dave Harvey. Unsubscribe anytime.
+                  </label>
+                  {errors.consent && (
+                    <p className="text-[13px] text-[#DC2626] mt-2">{errors.consent}</p>
+                  )}
+                </div>
               </div>
             </div>
 
