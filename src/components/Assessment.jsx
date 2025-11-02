@@ -11,16 +11,27 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const currentCategory = assessmentCategories[currentCategoryIndex];
   const totalCategories = assessmentCategories.length;
 
+  // Calculate total questions and current question number
+  const getTotalQuestions = () => {
+    return assessmentCategories.reduce((sum, cat) => sum + cat.questions.length, 0);
+  };
+
+  const getCurrentQuestionNumber = () => {
+    let count = 0;
+    for (let i = 0; i < currentCategoryIndex; i++) {
+      count += assessmentCategories[i].questions.length;
+    }
+    return count + 1;
+  };
+
   // Auto-save responses to Supabase (debounced)
   useEffect(() => {
     if (!assessmentId || Object.keys(responses).length === 0) return;
 
-    // Clear existing timeout
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
 
-    // Set new timeout to save after 1 second of inactivity
     saveTimeoutRef.current = setTimeout(async () => {
       setIsSaving(true);
       try {
@@ -42,7 +53,6 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
       }
     }, 1000);
 
-    // Cleanup timeout on unmount
     return () => {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
@@ -82,60 +92,39 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   };
 
   const getTotalProgress = () => {
-    const totalQuestions = assessmentCategories.reduce(
-      (sum, cat) => sum + cat.questions.length,
-      0
-    );
+    const totalQuestions = getTotalQuestions();
     const answeredQuestions = Object.keys(responses).length;
-    return Math.round((answeredQuestions / totalQuestions) * 100);
+    return (answeredQuestions / totalQuestions) * 100;
   };
 
-  const categoryIcons = ['🙏', '🏠', '📖', '💙', '✝️', '👥', '⛪'];
-
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
-      <div className="container mx-auto px-4 max-w-5xl">
-        {/* Header Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-dark">Am I Called? Assessment</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Category {currentCategoryIndex + 1} of {totalCategories}
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              {isSaving && (
-                <span className="text-xs text-gray-500 flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-                  Saving...
-                </span>
-              )}
-              <button
-                onClick={onBack}
-                className="text-sm text-gray-600 hover:text-primary font-medium transition-colors"
-              >
-                ← Back to Home
-              </button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#FAFAFA]">
+      {/* Top Fixed Progress Bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E5E7EB]">
+        {/* Thin Progress Line */}
+        <div className="h-0.5 bg-[#E5E7EB]">
+          <div
+            className="h-full bg-[#6366F1] transition-all duration-300"
+            style={{ width: `${getTotalProgress()}%` }}
+          />
+        </div>
 
-          {/* Overall Progress */}
-          <div className="mb-4">
-            <div className="flex justify-between text-sm text-gray-700 mb-2">
-              <span className="font-medium">Overall Progress</span>
-              <span className="font-semibold text-primary">{getTotalProgress()}% Complete</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div
-                className="bg-primary h-2.5 rounded-full transition-all duration-300"
-                style={{ width: `${getTotalProgress()}%` }}
-              />
-            </div>
+        {/* Progress Text */}
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <button
+            onClick={onBack}
+            className="text-[13px] text-[#71717A] hover:text-[#6366F1] transition-colors"
+          >
+            ← Exit
+          </button>
+          <div className="text-[13px] text-[#71717A]">
+            Question {getCurrentQuestionNumber()} of {getTotalQuestions()}
           </div>
+        </div>
 
-          {/* Category Progress Pills */}
-          <div className="flex flex-wrap gap-2">
+        {/* Dimension Pills */}
+        <div className="max-w-7xl mx-auto px-6 pb-4">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {assessmentCategories.map((cat, index) => {
               const isCompleted = index < currentCategoryIndex;
               const isCurrent = index === currentCategoryIndex;
@@ -143,140 +132,145 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
               return (
                 <div
                   key={cat.id}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                     isCompleted
-                      ? 'bg-success/10 text-success border border-success/20'
+                      ? 'bg-[#DCFCE7] text-[#059669]'
                       : isCurrent
-                      ? 'bg-primary/10 text-primary border border-primary/30'
-                      : 'bg-gray-100 text-gray-500 border border-gray-200'
+                      ? 'bg-[#6366F1] text-white'
+                      : 'bg-[#F3F4F6] text-[#71717A]'
                   }`}
-                  title={cat.title}
                 >
-                  {categoryIcons[index]} {cat.title}
+                  {cat.title}
                 </div>
               );
             })}
           </div>
         </div>
+      </div>
 
-        {/* Category Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-4">
-          <div className="flex items-start gap-4 mb-8">
-            <div className="flex-shrink-0 w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center text-3xl">
-              {categoryIcons[currentCategoryIndex]}
-            </div>
-            <div className="flex-grow">
-              <h2 className="text-3xl font-bold text-dark mb-2">
-                {currentCategory.title}
-              </h2>
-              <p className="text-gray-600">{currentCategory.description}</p>
-            </div>
-          </div>
+      {/* Question Card */}
+      <div className="pt-40 pb-32 px-6">
+        <div className="mx-auto max-w-[680px]">
+          {currentCategory.questions.map((question, index) => {
+            const currentScore = getScore(index);
 
-          {/* Score Legend */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-8">
-            <p className="text-sm font-semibold text-dark mb-3">Rating Scale:</p>
-            <div className="grid grid-cols-5 gap-2 text-xs">
-              {scoreLabels.map((label) => (
-                <div key={label.value} className="text-center">
-                  <div className="font-bold text-dark mb-1">{label.value}</div>
-                  <div className="text-gray-600">{label.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Questions */}
-          <div className="space-y-8">
-            {currentCategory.questions.map((question, index) => (
-              <div key={index} className="border-b border-gray-200 pb-6 last:border-0">
-                <p className="text-base text-dark mb-4 font-medium leading-relaxed">
-                  <span className="inline-flex items-center justify-center w-7 h-7 bg-primary/10 text-primary rounded-full text-sm font-bold mr-3">
+            return (
+              <div key={index} className="mb-16 last:mb-0">
+                {/* Question Number Badge */}
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-[#F3F4F6] text-[#18181B] rounded-full text-sm font-medium">
                     {index + 1}
-                  </span>
-                  {question}
-                </p>
+                  </div>
+                  <h2 className="text-lg font-medium text-[#18181B] leading-relaxed">
+                    {question}
+                  </h2>
+                </div>
 
-                {/* Score Buttons */}
-                <div className="grid grid-cols-5 gap-3 ml-10">
+                {/* Response Options - Desktop Horizontal */}
+                <div className="hidden md:block">
+                  <div className="flex justify-between items-center gap-4 mb-2">
+                    {scoreLabels.map((scoreLabel) => {
+                      const isSelected = currentScore === scoreLabel.value;
+                      return (
+                        <button
+                          key={scoreLabel.value}
+                          onClick={() => handleScoreChange(index, scoreLabel.value)}
+                          className={`flex-shrink-0 w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-all ${
+                            isSelected
+                              ? 'bg-[#6366F1] border-[#6366F1] text-white scale-105 shadow-md'
+                              : 'bg-white border-[#E5E7EB] text-[#71717A] hover:border-[#6366F1]'
+                          }`}
+                          title={scoreLabel.description}
+                        >
+                          {scoreLabel.value}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {/* Labels */}
+                  <div className="flex justify-between text-xs text-[#A1A1AA]">
+                    <span>Strongly Disagree</span>
+                    <span>Strongly Agree</span>
+                  </div>
+                </div>
+
+                {/* Response Options - Mobile Vertical */}
+                <div className="md:hidden space-y-2">
                   {scoreLabels.map((scoreLabel) => {
-                    const isSelected = getScore(index) === scoreLabel.value;
+                    const isSelected = currentScore === scoreLabel.value;
                     return (
                       <button
                         key={scoreLabel.value}
                         onClick={() => handleScoreChange(index, scoreLabel.value)}
-                        className={`p-4 rounded-lg border-2 transition-all hover:scale-105 ${
+                        className={`w-full p-4 rounded-md border-2 flex items-center gap-4 transition-all ${
                           isSelected
-                            ? 'border-primary bg-primary text-white shadow-lg shadow-primary/30'
-                            : 'border-gray-300 hover:border-primary/50 hover:bg-gray-50'
+                            ? 'bg-[#6366F1] border-[#6366F1] text-white'
+                            : 'bg-white border-[#E5E7EB] text-[#71717A]'
                         }`}
-                        title={scoreLabel.description}
                       >
-                        <div className={`font-bold text-2xl mb-1 ${isSelected ? 'text-white' : 'text-primary'}`}>
+                        <span className="flex-shrink-0 w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-medium text-sm">
                           {scoreLabel.value}
-                        </div>
-                        <div className={`text-xs leading-tight ${isSelected ? 'text-white' : 'text-gray-600'}`}>
-                          {scoreLabel.label.split(' ').slice(0, 2).join(' ')}
-                        </div>
+                        </span>
+                        <span className="text-sm font-medium">{scoreLabel.label}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Navigation Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <button
-              onClick={handlePrevious}
-              disabled={currentCategoryIndex === 0}
-              className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
-                currentCategoryIndex === 0
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-200 text-dark hover:bg-gray-300 shadow-sm hover:shadow'
-              }`}
-            >
-              ← Previous
-            </button>
-
-            <div className="text-center">
-              {!isCategoryComplete() && (
-                <div className="flex items-center gap-2 text-warning">
-                  <span className="text-xl">⚠️</span>
-                  <p className="text-sm font-medium">
-                    Please answer all questions to continue
-                  </p>
-                </div>
-              )}
-              {isCategoryComplete() && (
-                <div className="flex items-center gap-2 text-success">
-                  <span className="text-xl">✓</span>
-                  <p className="text-sm font-medium">
-                    Category complete! Ready to proceed
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <button
-              onClick={handleNext}
-              disabled={!isCategoryComplete()}
-              className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
-                !isCategoryComplete()
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : currentCategoryIndex === totalCategories - 1
-                  ? 'bg-success text-white hover:bg-success/90 shadow-sm hover:shadow-md'
-                  : 'bg-primary text-white hover:bg-primary-600 shadow-sm hover:shadow-md'
-              }`}
-            >
-              {currentCategoryIndex === totalCategories - 1 ? 'View Results →' : 'Next →'}
-            </button>
-          </div>
+            );
+          })}
         </div>
       </div>
+
+      {/* Fixed Footer Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] py-4">
+        <div className="max-w-[680px] mx-auto px-6 flex justify-between items-center gap-4">
+          <button
+            onClick={handlePrevious}
+            disabled={currentCategoryIndex === 0}
+            className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${
+              currentCategoryIndex === 0
+                ? 'text-[#A1A1AA] cursor-not-allowed'
+                : 'text-[#6366F1] hover:text-[#4F46E5]'
+            }`}
+          >
+            ← Previous
+          </button>
+
+          <div className="text-center">
+            {!isCategoryComplete() ? (
+              <p className="text-xs text-[#A1A1AA]">Answer all questions to continue</p>
+            ) : (
+              <p className="text-xs text-[#059669]">✓ Ready to proceed</p>
+            )}
+          </div>
+
+          <button
+            onClick={handleNext}
+            disabled={!isCategoryComplete()}
+            className={`px-5 py-2.5 text-sm font-medium rounded-md transition-all ${
+              !isCategoryComplete()
+                ? 'bg-[#E5E7EB] text-[#A1A1AA] cursor-not-allowed'
+                : currentCategoryIndex === totalCategories - 1
+                ? 'bg-[#059669] text-white hover:bg-[#047857] shadow-sm hover:shadow-md hover:-translate-y-px'
+                : 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm hover:shadow-md hover:-translate-y-px'
+            }`}
+          >
+            {currentCategoryIndex === totalCategories - 1 ? 'View Results →' : 'Next →'}
+          </button>
+        </div>
+      </div>
+
+      {/* Scrollbar hide utility */}
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }
