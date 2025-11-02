@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { supabase } from '../lib/supabase';
 
 function EmailCapture({ onNext, onBack }) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
+    role: '',
+    maritalStatus: '',
     consent: false
   });
   const [errors, setErrors] = useState({});
@@ -26,6 +30,8 @@ function EmailCapture({ onNext, onBack }) {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
+    if (!formData.role) newErrors.role = 'Please select your present role';
+    if (!formData.maritalStatus) newErrors.maritalStatus = 'Please select your marital status';
     if (!formData.consent) newErrors.consent = 'You must agree to receive emails';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -38,33 +44,32 @@ function EmailCapture({ onNext, onBack }) {
     setIsSubmitting(true);
 
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-      const response = await fetch(`${supabaseUrl}/functions/v1/start-assessment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          consent: formData.consent,
-        }),
-      });
+      const { data, error } = await supabase
+        .from('assessments')
+        .insert([
+          {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            phone: formData.phone || null,
+            role: formData.role,
+            marital_status: formData.maritalStatus,
+            consent: formData.consent,
+            responses: {},
+            completed: false
+          }
+        ])
+        .select()
+        .single();
 
-      if (!response.ok) {
-        throw new Error('Failed to start assessment');
+      if (error) {
+        console.error('Error creating assessment:', error);
+        setErrors({ submit: 'Failed to save your information. Please try again.' });
+        setIsSubmitting(false);
+        return;
       }
 
-      const data = await response.json();
-
-      // Store session info in localStorage
-      localStorage.setItem('aic_session_id', data.sessionId);
-      localStorage.setItem('aic_assessment_id', data.assessmentId);
-      localStorage.setItem('aic_contact_id', data.contactId);
-      localStorage.setItem('aic_session_token', data.sessionToken);
-
-      onNext(data.assessmentId);
+      onNext(data.id);
     } catch (err) {
       console.error('Unexpected error:', err);
       setErrors({ submit: 'An unexpected error occurred. Please try again.' });
@@ -154,6 +159,67 @@ function EmailCapture({ onNext, onBack }) {
               />
               {errors.email && (
                 <p className="text-[13px] text-[#DC2626] mt-1">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label className="block text-[13px] font-medium text-[#18181B] mb-2">
+                Phone Number <span className="text-[#71717A]">(optional)</span>
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 text-[15px] bg-white border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all"
+                placeholder="+1 (555) 000-0000"
+              />
+            </div>
+
+            {/* Role */}
+            <div>
+              <label className="block text-[13px] font-medium text-[#18181B] mb-2">
+                Present Role <span className="text-[#DC2626]">*</span>
+              </label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
+                  errors.role ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
+              >
+                <option value="">—Please choose an option—</option>
+                <option value="plant">I hope to plant a church</option>
+                <option value="pastor">I want to pastor on a team</option>
+                <option value="student">I am a Bible or seminary student</option>
+                <option value="leader">I am a local church leader curious about my calling</option>
+              </select>
+              {errors.role && (
+                <p className="text-[13px] text-[#DC2626] mt-1">{errors.role}</p>
+              )}
+            </div>
+
+            {/* Marital Status */}
+            <div>
+              <label className="block text-[13px] font-medium text-[#18181B] mb-2">
+                Are you married? <span className="text-[#DC2626]">*</span>
+              </label>
+              <select
+                name="maritalStatus"
+                value={formData.maritalStatus}
+                onChange={handleChange}
+                className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
+                  errors.maritalStatus ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
+              >
+                <option value="">—Please choose an option—</option>
+                <option value="married">Married</option>
+                <option value="single">Single</option>
+              </select>
+              {errors.maritalStatus && (
+                <p className="text-[13px] text-[#DC2626] mt-1">{errors.maritalStatus}</p>
               )}
             </div>
 
