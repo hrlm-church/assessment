@@ -1,172 +1,151 @@
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import AOS from 'aos';
 
 function AboutAssessment({ onNext, onBack }) {
-  useEffect(() => {
-    AOS.init({ duration: 1000, easing: 'ease-in-out', once: true });
-  }, []);
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center py-16 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900">
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px',
-        }}></div>
-      </div>
+    <div className="bg-[#FAFAFA] py-16">
+      <div className="mx-auto max-w-[720px] px-6">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mb-12"
+        >
+          <h2 className="text-2xl font-semibold text-[#18181B] mb-4">About the Assessment</h2>
+          <p className="text-[15px] text-[#71717A] leading-relaxed">
+            Welcome to the Am I Called? Assessment! This tool is designed to help you evaluate God's calling to plant or pastor. While assessments are hardly new ideas, AIC takes the step of using data analytics to help interpret the results for you.
+          </p>
+        </motion.div>
 
-      <div className="container relative px-4 z-10">
-        <div className="max-w-5xl mx-auto">
+        {/* Content Cards - Stacked */}
+        <div className="space-y-4">
+          {/* Data-Driven Insights */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="bg-white border border-[#E5E7EB] rounded-lg p-6"
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
-              className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl shadow-lg shadow-purple-500/50 text-4xl mb-6"
-            >
-              📖
-            </motion.div>
-            <h3 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mb-4">
-              About the Assessment
-            </h3>
-            <div className="w-24 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="bg-slate-900/50 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-500/20 p-8 md:p-12"
-          >
-            <p className="text-gray-300 text-lg leading-relaxed mb-8">
-              Welcome to the <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Am I Called? Assessment!</span> This tool is designed to help you evaluate God's calling to plant or pastor. While assessments are hardly new ideas, AIC takes the step of using data analytics to help interpret the results for you.
-            </p>
-
-            <div className="relative overflow-hidden bg-gradient-to-br from-purple-950/50 to-slate-900/50 border-l-4 border-purple-500 rounded-2xl p-8 mb-8 shadow-lg">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-purple-500 rounded-full filter blur-3xl opacity-20"></div>
-              <div className="flex items-start gap-4">
-                <span className="text-6xl flex-shrink-0">📊</span>
-                <div className="relative">
-                  <h5 className="text-2xl font-black text-white mb-4">Data-Driven Insights</h5>
-                  <p className="text-gray-300 mb-4 leading-relaxed">
-                    Specifically, we spent the first two years collecting data from <span className="font-bold px-2 py-1 bg-slate-800/70 rounded-lg text-purple-300">over 700 respondents</span> who used the 1.0 version of the assessment. We analyzed items using <span className="font-bold text-white">state-of-the-art statistical analyses</span> to ensure what you see on the results page is a precise and constructive result.
-                  </p>
-                  <p className="text-gray-300 leading-relaxed">
-                    We pray this tool is as interesting and helpful to you as the process of development has been for us!
-                  </p>
-                </div>
+            <div className="flex items-start gap-4">
+              <svg className="w-6 h-6 text-[#6366F1] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+              </svg>
+              <div>
+                <h3 className="text-base font-medium text-[#18181B] mb-2">Data-Driven Insights</h3>
+                <p className="text-sm text-[#71717A] leading-relaxed mb-3">
+                  We spent the first two years collecting data from over 700 respondents who used the 1.0 version of the assessment. We analyzed items using state-of-the-art statistical analyses to ensure what you see on the results page is precise and constructive.
+                </p>
+                <p className="text-sm text-[#71717A] leading-relaxed">
+                  We pray this tool is as interesting and helpful to you as the process of development has been for us!
+                </p>
               </div>
             </div>
+          </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* 2x2 Grid of Features */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {[
+              {
+                icon: (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ),
+                title: 'Quick & Easy',
+                description: 'Takes about 5-10 minutes and is designed to be completed in one session'
+              },
+              {
+                icon: (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                  </svg>
+                ),
+                title: 'Focused & Relevant',
+                description: 'Built around the seven questions that form the GCC Church Planter Profile'
+              },
+              {
+                icon: (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ),
+                title: 'Scientifically Validated',
+                description: 'Based on data from 700+ respondents and rigorous statistical analysis'
+              },
+              {
+                icon: (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                  </svg>
+                ),
+                title: 'Bonus Content',
+                description: 'Receive a free chapter from "Am I Called?" with your results'
+              }
+            ].map((feature, index) => (
               <motion.div
-                whileHover={{ y: -5 }}
-                className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-md border border-purple-500/20 rounded-2xl p-6 shadow-lg hover:shadow-purple-500/20 hover:shadow-xl transition-all duration-300"
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 + index * 0.05 }}
+                className="bg-white border border-[#E5E7EB] rounded-lg p-5"
               >
-                <div className="text-5xl mb-3 group-hover:scale-110 transition-transform">⏱️</div>
-                <h6 className="font-black text-white text-xl mb-2">Quick & Easy</h6>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  The AIC Assessment will take about <span className="font-bold text-purple-400">5-10 minutes</span> and is designed to be completed in one session.
-                </p>
+                <div className="flex items-start gap-3">
+                  <div className="text-[#6366F1] mt-0.5">
+                    {feature.icon}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-[#18181B] mb-1">{feature.title}</h4>
+                    <p className="text-sm text-[#71717A] leading-relaxed">{feature.description}</p>
+                  </div>
+                </div>
               </motion.div>
+            ))}
+          </div>
 
-              <motion.div
-                whileHover={{ y: -5 }}
-                className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-md border border-purple-500/20 rounded-2xl p-6 shadow-lg hover:shadow-purple-500/20 hover:shadow-xl transition-all duration-300"
-              >
-                <div className="text-5xl mb-3 group-hover:scale-110 transition-transform">🎯</div>
-                <h6 className="font-black text-white text-xl mb-2">Focused & Relevant</h6>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  Built around the seven questions that form the <span className="font-bold text-white">GCC Church Planter Profile</span>.
-                </p>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ y: -5 }}
-                className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-md border border-purple-500/20 rounded-2xl p-6 shadow-lg hover:shadow-purple-500/20 hover:shadow-xl transition-all duration-300"
-              >
-                <div className="text-5xl mb-3 group-hover:scale-110 transition-transform">✓</div>
-                <h6 className="font-black text-white text-xl mb-2">Scientifically Validated</h6>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  Based on data from <span className="font-bold text-white">700+ respondents</span> and rigorous statistical analysis.
-                </p>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ y: -5 }}
-                className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-md border border-purple-500/20 rounded-2xl p-6 shadow-lg hover:shadow-purple-500/20 hover:shadow-xl transition-all duration-300"
-              >
-                <div className="text-5xl mb-3 group-hover:scale-110 transition-transform">📖</div>
-                <h6 className="font-black text-white text-xl mb-2">Bonus Content</h6>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  Receive a <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">free chapter</span> from "Am I Called?" with your results.
-                </p>
-              </motion.div>
-            </div>
-
-            <div className="bg-gradient-to-br from-purple-950/50 to-slate-900/50 border-l-4 border-purple-500 rounded-2xl p-8 mb-8 shadow-lg">
-              <h6 className="font-black text-white text-2xl mb-4 flex items-center gap-3">
-                <span className="text-3xl">🚀</span>
-                What Happens Next?
-              </h6>
-              <ol className="space-y-3 text-gray-300">
-                <li className="flex gap-4 items-start">
-                  <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold rounded-full text-sm shadow-lg shadow-purple-500/50">1</span>
-                  <span className="pt-1">You'll answer questions across 7 key ministry areas</span>
+          {/* What Happens Next */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
+            className="bg-white border border-[#E5E7EB] rounded-lg p-6"
+          >
+            <h3 className="text-base font-medium text-[#18181B] mb-4">What Happens Next?</h3>
+            <ol className="space-y-3">
+              {[
+                "You'll answer questions across 7 key ministry areas",
+                "Each question is rated on a 1-5 scale",
+                "Receive detailed analysis of your strengths and growth areas",
+                "Get actionable next steps for your calling journey"
+              ].map((step, index) => (
+                <li key={index} className="flex gap-3 items-start text-sm text-[#71717A]">
+                  <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-[#6366F1] text-white font-medium rounded-full text-xs">
+                    {index + 1}
+                  </span>
+                  <span className="pt-0.5">{step}</span>
                 </li>
-                <li className="flex gap-4 items-start">
-                  <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold rounded-full text-sm shadow-lg shadow-purple-500/50">2</span>
-                  <span className="pt-1">Each question is rated on a 1-5 scale</span>
-                </li>
-                <li className="flex gap-4 items-start">
-                  <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold rounded-full text-sm shadow-lg shadow-purple-500/50">3</span>
-                  <span className="pt-1">Receive detailed analysis of your strengths and growth areas</span>
-                </li>
-                <li className="flex gap-4 items-start">
-                  <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 text-white font-bold rounded-full text-sm shadow-lg shadow-purple-500/50">4</span>
-                  <span className="pt-1">Get actionable next steps for your calling journey</span>
-                </li>
-              </ol>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-8 border-t border-purple-500/20">
-              <motion.button
-                whileHover={{ x: -5 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={onBack}
-                className="text-gray-400 hover:text-purple-400 font-semibold transition-colors flex items-center gap-2"
-              >
-                <span>←</span> Previous
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={onNext}
-                className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-2xl shadow-lg shadow-green-500/50 hover:shadow-xl hover:shadow-green-500/70 transition-all duration-300 flex items-center gap-3"
-              >
-                Start Assessment
-                <motion.span
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  →
-                </motion.span>
-              </motion.button>
-            </div>
+              ))}
+            </ol>
           </motion.div>
         </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between items-center mt-8">
+          <button
+            onClick={onBack}
+            className="px-5 py-2 text-sm font-medium text-[#6366F1] hover:text-[#4F46E5] transition-colors"
+          >
+            ← Previous
+          </button>
+          <button
+            onClick={onNext}
+            className="px-5 py-2.5 bg-[#059669] text-white text-sm font-medium rounded-md hover:bg-[#047857] transition-all shadow-sm hover:shadow-md hover:-translate-y-px"
+          >
+            Start Assessment →
+          </button>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
 
