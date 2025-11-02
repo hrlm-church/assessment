@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
 import { assessmentCategories, interpretationGuide } from '../data/assessmentData';
+import { supabase } from '../lib/supabase';
 
-function Results({ responses, onRestart }) {
+function Results({ assessmentId, responses, onRestart }) {
+  const [isSaving, setIsSaving] = useState(true);
   // Calculate category scores
   const calculateCategoryScore = (categoryId) => {
     const category = assessmentCategories.find(cat => cat.id === categoryId);
@@ -51,6 +54,52 @@ function Results({ responses, onRestart }) {
 
   // Identify growth areas (categories with avg < 3.5)
   const growthAreas = categoryResults.filter(cat => cat.score.average < 3.5);
+
+  // Save final results to Supabase
+  useEffect(() => {
+    if (!assessmentId) {
+      setIsSaving(false);
+      return;
+    }
+
+    const saveResults = async () => {
+      try {
+        // Prepare results data
+        const resultsData = {
+          categoryScores: categoryResults.map(cat => ({
+            id: cat.id,
+            title: cat.title,
+            average: cat.score.average,
+            interpretation: cat.interpretation.interpretation
+          })),
+          overallScore: overallAverage,
+          overallInterpretation: overallInterpretation.interpretation,
+          strengths: strengths.map(s => ({ id: s.id, title: s.title, score: s.score.average })),
+          growthAreas: growthAreas.map(g => ({ id: g.id, title: g.title, score: g.score.average }))
+        };
+
+        const { error } = await supabase
+          .from('assessments')
+          .update({
+            results: resultsData,
+            overall_score: overallAverage,
+            completed: true,
+            completed_at: new Date().toISOString()
+          })
+          .eq('id', assessmentId);
+
+        if (error) {
+          console.error('Error saving results:', error);
+        }
+      } catch (err) {
+        console.error('Unexpected error saving results:', err);
+      } finally {
+        setIsSaving(false);
+      }
+    };
+
+    saveResults();
+  }, [assessmentId]); // Only run once on mount
 
   // Get color for score
   const getScoreColor = (average) => {
