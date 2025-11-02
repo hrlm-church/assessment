@@ -114,13 +114,7 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const navigateToSection = (index) => {
     setCurrentCategoryIndex(index);
     setIsMobileMenuOpen(false);
-    window.location.hash = assessmentCategories[index].id;
   };
-
-  // Update hash on category change
-  useEffect(() => {
-    window.location.hash = currentCategory.id;
-  }, [currentCategoryIndex, currentCategory.id]);
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex">
