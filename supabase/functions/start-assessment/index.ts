@@ -19,11 +19,11 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { email, first_name, last_name, consent } = await req.json();
+    const { email, first_name, last_name, phone, role, marital_status, consent } = await req.json();
 
-    if (!email || !consent) {
+    if (!email || !consent || !role || !marital_status) {
       return new Response(
-        JSON.stringify({ error: 'Email and consent required' }),
+        JSON.stringify({ error: 'Email, role, marital status, and consent are required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -49,12 +49,21 @@ serve(async (req) => {
 
     if (sessionError) throw sessionError;
 
-    // Create assessment
+    // Create assessment with form data
     const { data: assessment, error: assessmentError } = await supabaseClient
       .from('assessments')
       .insert({
         contact_id: contact.id,
         session_id: session.id,
+        first_name,
+        last_name,
+        email,
+        phone: phone || null,
+        role,
+        marital_status,
+        consent,
+        responses: {},
+        completed: false,
       })
       .select()
       .single();

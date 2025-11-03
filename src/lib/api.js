@@ -13,7 +13,7 @@ const SUPABASE_URL = 'https://axrjfkyoaydcuezcaoce.supabase.co';
  *
  * Falls back to direct database insert if edge functions not deployed
  */
-export async function startAssessment({ email, first_name, last_name, consent }) {
+export async function startAssessment({ email, first_name, last_name, phone, role, marital_status, consent }) {
   console.log('Starting assessment for:', email);
 
   try {
@@ -25,7 +25,7 @@ export async function startAssessment({ email, first_name, last_name, consent })
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, first_name, last_name, consent }),
+      body: JSON.stringify({ email, first_name, last_name, phone, role, marital_status, consent }),
     });
 
     console.log('Response status:', response.status);
@@ -72,6 +72,9 @@ export async function startAssessment({ email, first_name, last_name, consent })
             first_name,
             last_name,
             email,
+            phone: phone || null,
+            role,
+            marital_status,
             consent,
             responses: {},
             completed: false
