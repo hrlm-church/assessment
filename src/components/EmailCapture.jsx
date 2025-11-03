@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { supabase } from '../lib/supabase';
+import { startAssessment } from '../lib/api';
 
 function EmailCapture({ onNext, onBack }) {
   const [formData, setFormData] = useState({
@@ -44,35 +44,18 @@ function EmailCapture({ onNext, onBack }) {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase
-        .from('assessments')
-        .insert([
-          {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            email: formData.email,
-            phone: formData.phone || null,
-            role: formData.role,
-            marital_status: formData.maritalStatus,
-            consent: formData.consent,
-            responses: {},
-            completed: false
-          }
-        ])
-        .select()
-        .single();
+      const result = await startAssessment({
+        email: formData.email,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        consent: formData.consent,
+      });
 
-      if (error) {
-        console.error('Error creating assessment:', error);
-        setErrors({ submit: 'Failed to save your information. Please try again.' });
-        setIsSubmitting(false);
-        return;
-      }
-
-      onNext(data.id);
+      // Pass assessment ID and session info to next view
+      onNext(result.assessmentId, result);
     } catch (err) {
       console.error('Unexpected error:', err);
-      setErrors({ submit: 'An unexpected error occurred. Please try again.' });
+      setErrors({ submit: err.message || 'An unexpected error occurred. Please try again.' });
       setIsSubmitting(false);
     }
   };

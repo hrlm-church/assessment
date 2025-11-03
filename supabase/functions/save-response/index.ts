@@ -23,7 +23,7 @@ serve(async (req) => {
       }
     );
 
-    const { assessmentId, section, questionKey, value } = await req.json();
+    const { assessmentId, section, questionKey, value, meta } = await req.json();
 
     if (!assessmentId || !section || !questionKey || value < 1 || value > 5) {
       return new Response(
@@ -46,6 +46,16 @@ serve(async (req) => {
       );
 
     if (error) throw error;
+
+    // Update assessment meta if provided (e.g., current section, index)
+    if (meta) {
+      const { error: metaError } = await supabaseClient
+        .from('assessments')
+        .update({ meta })
+        .eq('id', assessmentId);
+
+      if (metaError) console.error('Meta update error:', metaError);
+    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,

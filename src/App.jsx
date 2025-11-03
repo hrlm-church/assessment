@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './assets/css/tailwind.css';
 import Hero from './components/Hero';
 import GettingStarted from './components/GettingStarted';
@@ -7,15 +7,61 @@ import AboutAssessment from './components/AboutAssessment';
 import Assessment from './components/Assessment';
 import Results from './components/Results';
 import BookRAG from './components/BookRAG';
+import { resolveSession } from './lib/api';
 
 function App() {
   const [currentView, setCurrentView] = useState('hero');
   const [assessmentId, setAssessmentId] = useState(null); // Supabase record ID
+  const [sessionId, setSessionId] = useState(null);
   const [responses, setResponses] = useState({});
+  const [isResuming, setIsResuming] = useState(false);
 
-  const handleEmailSubmit = (id) => {
-    // Store the assessment ID from Supabase
+  // Check for resume token in URL on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const resumeToken = urlParams.get('token');
+
+    if (resumeToken) {
+      handleResumeSession(resumeToken);
+    }
+  }, []);
+
+  const handleResumeSession = async (token) => {
+    setIsResuming(true);
+    try {
+      const sessionData = await resolveSession(token);
+
+      if (sessionData.completed) {
+        alert('This assessment has already been completed. Starting a new one.');
+        setCurrentView('hero');
+        return;
+      }
+
+      // Restore session state
+      setAssessmentId(sessionData.assessmentId);
+      setSessionId(sessionData.sessionId);
+      setResponses(sessionData.answers || {});
+
+      // Navigate to assessment
+      setCurrentView('assessment');
+
+      // Clear URL params
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } catch (error) {
+      console.error('Resume error:', error);
+      alert(`Failed to resume assessment: ${error.message}`);
+      setCurrentView('hero');
+    } finally {
+      setIsResuming(false);
+    }
+  };
+
+  const handleEmailSubmit = (id, sessionData) => {
+    // Store the assessment ID and session data
     setAssessmentId(id);
+    if (sessionData) {
+      setSessionId(sessionData.sessionId);
+    }
     setCurrentView('about');
   };
 
@@ -24,13 +70,27 @@ function App() {
     setCurrentView('results');
   };
 
-  const handleRestart = () => {
+  const handleRestart = async () => {
     if (confirm('Are you sure you want to restart? This will start a new assessment.')) {
+      // TODO: Call restartAssessment API if sessionId exists
       setResponses({});
       setAssessmentId(null);
+      setSessionId(null);
       setCurrentView('hero');
     }
   };
+
+  // Show loading state while resuming
+  if (isResuming) {
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6366F1] mx-auto mb-4"></div>
+          <p className="text-slate-600">Resuming your assessment...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
