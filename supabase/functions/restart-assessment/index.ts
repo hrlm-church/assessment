@@ -69,14 +69,14 @@ serve(async (req) => {
 
     if (assessmentError) throw assessmentError;
 
-    // Generate new session JWT
+    // Generate new session JWT (30 days)
     const secret = Deno.env.get('JWT_SECRET') ?? 'your-secret-key';
     const sessionToken = await create(
       { alg: 'HS256', typ: 'JWT' },
       {
         session_id: newSession.id,
         contact_id: oldSession.contact_id,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
       },
       secret
     );
@@ -86,6 +86,7 @@ serve(async (req) => {
         sessionId: newSession.id,
         assessmentId: newAssessment.id,
         sessionToken,
+        resumeToken: newSession.resume_token,
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

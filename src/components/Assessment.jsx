@@ -22,11 +22,9 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
     for (let i = 0; i < currentCategoryIndex; i++) {
       count += assessmentCategories[i].questions.length;
     }
-    return count + 1;
-  };
-
-  const getCurrentSectionQuestionCount = () => {
-    return currentCategory.questions.length;
+    // Count answered questions in current section
+    const answeredInCurrent = currentCategory.questions.filter((_, index) => getScore(index) !== null).length;
+    return count + answeredInCurrent + 1;
   };
 
   const getSectionState = (categoryIndex) => {
@@ -38,7 +36,7 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
     return 'upcoming';
   };
 
-  // Auto-save responses to Supabase (debounced)
+  // Auto-save responses to Supabase (debounced 300ms)
   useEffect(() => {
     if (!assessmentId || Object.keys(responses).length === 0) return;
 
@@ -65,7 +63,7 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
       } finally {
         setIsSaving(false);
       }
-    }, 1000);
+    }, 300);
 
     return () => {
       if (saveTimeoutRef.current) {
@@ -94,6 +92,12 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const handleNext = () => {
     if (currentCategoryIndex < totalCategories - 1) {
       setCurrentCategoryIndex(currentCategoryIndex + 1);
+      // Scroll to top of section
+      const nextSection = assessmentCategories[currentCategoryIndex + 1];
+      const element = document.getElementById(nextSection.id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     } else {
       onComplete(responses);
     }
@@ -102,6 +106,12 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const handlePrevious = () => {
     if (currentCategoryIndex > 0) {
       setCurrentCategoryIndex(currentCategoryIndex - 1);
+      // Scroll to top of section
+      const prevSection = assessmentCategories[currentCategoryIndex - 1];
+      const element = document.getElementById(prevSection.id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -127,14 +137,19 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const navigateToSection = (index) => {
     setCurrentCategoryIndex(index);
     setIsMobileMenuOpen(false);
-    // Update URL hash
+    // Scroll to section heading
     const sectionId = assessmentCategories[index].id;
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    // Update URL hash
     if (window.location.hash !== `#${sectionId}`) {
       window.history.replaceState(null, '', `#${sectionId}`);
     }
   };
 
-  // Sync hash with current section on mount and navigation
+  // Sync hash with current section
   useEffect(() => {
     const sectionId = currentCategory.id;
     if (window.location.hash !== `#${sectionId}`) {
@@ -142,263 +157,240 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
     }
   }, [currentCategoryIndex, currentCategory.id]);
 
+  // Section label mapping (exact as specified)
+  const sectionLabels = {
+    'godliness': 'Godliness',
+    'home_life': 'Home Life',
+    'preaching': 'Preaching',
+    'shepherding': 'Shepherding',
+    'evangelism': 'Evangelistic Focus',
+    'leadership': 'Leadership',
+    'gcc_alignment': 'GCC Alignment'
+  };
+
   return (
-    <div className="min-h-screen bg-[#FAFAFA] flex">
-      {/* Left Sidebar - Desktop/Tablet - Progress Ladder */}
-      <aside className="hidden lg:block sticky top-0 h-screen w-60 bg-[#F9FAFB] border-r border-[#E5E7EB] overflow-y-auto shadow-sm">
-        <nav className="pt-[5rem] pb-8 px-4">
-          <div className="relative">
+    <div className="min-h-screen bg-[#FAFAFA]">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-30 bg-white border-b border-slate-200" style={{ height: 'var(--header-h)' }}>
+        {/* Thin Progress Line */}
+        <div className="h-0.5 bg-slate-200">
+          <div
+            className="h-full bg-[#4F8EF7] transition-all duration-300"
+            style={{ width: `${getTotalProgress()}%` }}
+          />
+        </div>
+
+        {/* Header Content */}
+        <div className="h-[calc(var(--header-h)-2px)] px-4 md:px-6 flex items-center justify-between">
+          {/* Left: Menu (mobile) + Exit */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="sm:hidden text-slate-600 hover:text-[#4F8EF7]"
+              aria-label="Open menu"
+            >
+              ☰
+            </button>
+            <button
+              onClick={onBack}
+              className="text-sm text-slate-600 hover:text-[#4F8EF7] transition-colors"
+            >
+              ← Exit
+            </button>
+          </div>
+
+          {/* Center: Title (hidden on mobile) */}
+          <h1 className="hidden md:block text-lg font-semibold text-slate-900">
+            Am I Called?
+          </h1>
+
+          {/* Right: Question Counter */}
+          <div className="text-sm text-slate-600">
+            Question {getCurrentQuestionNumber()} of {getTotalQuestions()}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="sm:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Grid Layout - starts below header */}
+      <div className="grid sm:grid-cols-1 md:[grid-template-columns:200px_minmax(0,1fr)] lg:[grid-template-columns:240px_minmax(0,1fr)] pt-[var(--header-h)]">
+
+        {/* Progress Ladder Sidebar - Desktop/Tablet */}
+        <aside className="hidden sm:block sticky top-[var(--header-h)] h-[calc(100dvh-var(--header-h))] overflow-y-auto bg-[#F9FAFB] border-r border-slate-200 px-4 pb-8 pt-6 shadow-[2px_0_4px_-1px_rgba(0,0,0,0.03)]">
+          {/* Anchor Label */}
+          <div className="text-xs uppercase tracking-wide text-slate-400 mb-3">Sections</div>
+
+          {/* Ladder with vertical rule */}
+          <div className="relative flex flex-col items-start pl-4 before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-0 before:w-px before:bg-slate-200">
             {assessmentCategories.map((cat, index) => {
               const state = getSectionState(index);
               const isLast = index === assessmentCategories.length - 1;
 
-              // Circle styles based on state
+              // Circle styles
               const circleClasses = {
-                active: 'bg-[#6366F1] border-[#6366F1] shadow-sm',
-                completed: 'bg-[#6366F1] border-[#6366F1]',
-                upcoming: 'bg-transparent border-[#D1D5DB]'
+                active: 'bg-[#4F8EF7] border-[#4F8EF7] shadow-sm',
+                completed: 'bg-[#4F8EF7] border-[#4F8EF7]',
+                upcoming: 'bg-white border-slate-300'
               }[state];
 
-              // Label styles based on state
+              // Label styles
               const labelClasses = {
-                active: 'font-bold text-[#6366F1]',
-                completed: 'font-medium text-[#71717A]',
-                upcoming: 'font-medium text-[#A1A1AA]'
+                active: 'text-[#1E40AF] font-semibold',
+                completed: 'text-slate-500',
+                upcoming: 'text-slate-400'
               }[state];
 
-              // Connector line style based on state
-              const connectorOpacity = {
-                active: 'opacity-40',
-                completed: 'opacity-25',
-                upcoming: 'opacity-100'
+              // Connector color (only for active/completed)
+              const connectorColor = {
+                active: 'bg-[#4F8EF7]/40',
+                completed: 'bg-[#4F8EF7]/25',
+                upcoming: 'bg-slate-200'
               }[state];
-
-              const connectorColor = state === 'upcoming' ? 'bg-[#E5E7EB]' : 'bg-[#6366F1]';
 
               return (
-                <div key={cat.id} className="relative">
+                <div key={cat.id} className="w-full">
+                  {/* Node Button */}
                   <button
                     onClick={() => navigateToSection(index)}
-                    className="group relative flex items-center gap-3 py-3 w-full text-left transition-all hover:translate-x-[2px] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:ring-offset-2 rounded"
+                    className="group relative flex items-center gap-3 w-full text-left px-2 py-2 rounded-md transition hover:bg-white hover:shadow-sm hover:translate-x-[2px] focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
                   >
-                    {/* Circle Node */}
-                    <div className={`relative z-10 flex-shrink-0 w-[14px] h-[14px] rounded-full border-2 transition-all ${circleClasses}`} />
+                    {/* Circle */}
+                    <div className={`w-3.5 h-3.5 rounded-full border-2 transition-all ${circleClasses} group-hover:border-[#4F8EF7]`} />
 
                     {/* Label */}
                     <span className={`text-sm transition-all ${labelClasses}`}>
-                      {cat.title}
+                      {sectionLabels[cat.id] || cat.title}
                     </span>
                   </button>
 
-                  {/* Vertical Connector Line */}
+                  {/* Connector Line (between nodes only) */}
                   {!isLast && (
-                    <div className={`absolute left-[6px] top-[3rem] w-[2px] h-[calc(100%-3rem)] ${connectorColor} ${connectorOpacity} transition-all`} />
+                    <div className={`ml-[6px] h-4 w-px ${connectorColor}`} />
                   )}
                 </div>
               );
             })}
           </div>
-        </nav>
-      </aside>
+        </aside>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+        {/* Mobile Drawer */}
+        <aside className={`sm:hidden fixed left-0 top-0 bottom-0 w-60 bg-[#F9FAFB] border-r border-slate-200 overflow-y-auto z-50 shadow-lg transform transition-transform ${
+          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-sm font-semibold text-slate-900">Sections</h3>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-slate-600 hover:text-slate-900"
+              >
+                ✕
+              </button>
+            </div>
 
-      {/* Mobile Drawer - Progress Ladder */}
-      <aside className={`lg:hidden fixed left-0 top-0 bottom-0 w-60 bg-[#F9FAFB] border-r border-[#E5E7EB] overflow-y-auto z-50 shadow-sm transform transition-transform ${
-        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-sm font-semibold text-[#18181B]">Assessment Sections</h3>
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-[#71717A] hover:text-[#18181B]"
-            >
-              ✕
-            </button>
-          </div>
-          <nav>
-            <div className="relative">
+            {/* Same ladder for mobile */}
+            <div className="relative flex flex-col items-start pl-4 before:content-[''] before:absolute before:top-0 before:bottom-0 before:left-0 before:w-px before:bg-slate-200">
               {assessmentCategories.map((cat, index) => {
                 const state = getSectionState(index);
                 const isLast = index === assessmentCategories.length - 1;
 
-                // Circle styles based on state
                 const circleClasses = {
-                  active: 'bg-[#6366F1] border-[#6366F1] shadow-sm',
-                  completed: 'bg-[#6366F1] border-[#6366F1]',
-                  upcoming: 'bg-transparent border-[#D1D5DB]'
+                  active: 'bg-[#4F8EF7] border-[#4F8EF7] shadow-sm',
+                  completed: 'bg-[#4F8EF7] border-[#4F8EF7]',
+                  upcoming: 'bg-white border-slate-300'
                 }[state];
 
-                // Label styles based on state
                 const labelClasses = {
-                  active: 'font-bold text-[#6366F1]',
-                  completed: 'font-medium text-[#71717A]',
-                  upcoming: 'font-medium text-[#A1A1AA]'
+                  active: 'text-[#1E40AF] font-semibold',
+                  completed: 'text-slate-500',
+                  upcoming: 'text-slate-400'
                 }[state];
 
-                // Connector line style based on state
-                const connectorOpacity = {
-                  active: 'opacity-40',
-                  completed: 'opacity-25',
-                  upcoming: 'opacity-100'
+                const connectorColor = {
+                  active: 'bg-[#4F8EF7]/40',
+                  completed: 'bg-[#4F8EF7]/25',
+                  upcoming: 'bg-slate-200'
                 }[state];
-
-                const connectorColor = state === 'upcoming' ? 'bg-[#E5E7EB]' : 'bg-[#6366F1]';
 
                 return (
-                  <div key={cat.id} className="relative">
+                  <div key={cat.id} className="w-full">
                     <button
                       onClick={() => navigateToSection(index)}
-                      className="group relative flex items-center gap-3 py-3 w-full text-left transition-all hover:translate-x-[2px] focus:outline-none focus:ring-2 focus:ring-[#6366F1] focus:ring-offset-2 rounded"
+                      className="group relative flex items-center gap-3 w-full text-left px-2 py-2 rounded-md transition hover:bg-white hover:shadow-sm hover:translate-x-[2px] focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
                     >
-                      {/* Circle Node */}
-                      <div className={`relative z-10 flex-shrink-0 w-[14px] h-[14px] rounded-full border-2 transition-all ${circleClasses}`} />
-
-                      {/* Label */}
+                      <div className={`w-3.5 h-3.5 rounded-full border-2 transition-all ${circleClasses} group-hover:border-[#4F8EF7]`} />
                       <span className={`text-sm transition-all ${labelClasses}`}>
-                        {cat.title}
+                        {sectionLabels[cat.id] || cat.title}
                       </span>
                     </button>
-
-                    {/* Vertical Connector Line */}
                     {!isLast && (
-                      <div className={`absolute left-[6px] top-[3rem] w-[2px] h-[calc(100%-3rem)] ${connectorColor} ${connectorOpacity} transition-all`} />
+                      <div className={`ml-[6px] h-4 w-px ${connectorColor}`} />
                     )}
                   </div>
                 );
               })}
             </div>
-          </nav>
-        </div>
-      </aside>
+          </div>
+        </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 lg:ml-60">
-        {/* Sticky Top Bar */}
-        <div className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]">
-          {/* Thin Progress Line */}
-          <div className="h-0.5 bg-[#E5E7EB]">
-            <div
-              className="h-full bg-[#6366F1] transition-all duration-300"
-              style={{ width: `${getTotalProgress()}%` }}
-            />
+        {/* Main Content Column */}
+        <main className="max-w-3xl mx-auto px-4 md:px-6 pb-24 w-full">
+          {/* Section Heading (scroll target) */}
+          <div id={currentCategory.id} className="scroll-mt-20 pt-8 pb-6">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-2">
+              {currentCategory.title}
+            </h2>
+            <p className="text-sm text-slate-600">
+              Answer as others who know you best would see you.
+            </p>
           </div>
 
-          {/* Header Content */}
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between gap-4 mb-3">
-              {/* Left: Menu (mobile) + Exit */}
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setIsMobileMenuOpen(true)}
-                  className="lg:hidden text-[#71717A] hover:text-[#6366F1]"
-                >
-                  ☰
-                </button>
-                <button
-                  onClick={onBack}
-                  className="text-[13px] text-[#71717A] hover:text-[#6366F1] transition-colors"
-                >
-                  ← Exit
-                </button>
-              </div>
-
-              {/* Right: Section Question Counter */}
-              <div className="text-[13px] text-[#71717A]">
-                Question 1 of {getCurrentSectionQuestionCount()}
-              </div>
-            </div>
-
-            {/* Center: Section Title + Subtitle */}
-            <div className="text-center">
-              <h1 className="text-2xl font-semibold text-[#18181B] mb-1">
-                {currentCategory.title}
-              </h1>
-              <p className="text-sm text-[#71717A]">
-                Answer as others who know you best would see you.
-              </p>
-              {currentCategory.description && (
-                <p className="text-xs text-[#A1A1AA] mt-1">{currentCategory.description}</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Question Cards */}
-        <div className="px-6 py-8 pb-32">
-          <div className="mx-auto max-w-[720px] space-y-6">
+          {/* Question Cards */}
+          <div className="space-y-5 md:space-y-6">
             {currentCategory.questions.map((question, index) => {
               const currentScore = getScore(index);
 
               return (
                 <div
                   key={index}
-                  role="group"
-                  aria-labelledby={`question-${currentCategory.id}-${index}`}
-                  className="group bg-white border border-[#E5E7EB] rounded-lg p-6 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 focus-within:shadow-md focus-within:-translate-y-1"
+                  className="w-full rounded-xl bg-white shadow-sm border border-slate-200 px-5 py-5 hover:shadow-md transition-shadow"
                 >
                   {/* Question Text */}
-                  <h3
-                    id={`question-${currentCategory.id}-${index}`}
-                    className="text-base font-medium text-[#18181B] leading-relaxed mb-6"
-                  >
+                  <h3 className="text-base font-medium text-slate-900 leading-relaxed mb-4 max-w-[60ch]">
                     {question}
                   </h3>
 
-                  {/* Response Options - Desktop Horizontal */}
-                  <div className="hidden md:block">
-                    <div className="flex justify-between items-center gap-4 mb-2">
-                      {scoreLabels.map((scoreLabel) => {
-                        const isSelected = currentScore === scoreLabel.value;
-                        return (
+                  {/* Likert Row - Even 5-column layout */}
+                  <div className="grid grid-cols-5 gap-3 items-center justify-items-center mt-4">
+                    {scoreLabels.map((scoreLabel) => {
+                      const isSelected = currentScore === scoreLabel.value;
+                      return (
+                        <div key={scoreLabel.value} className="flex flex-col items-center gap-2">
                           <button
-                            key={scoreLabel.value}
                             onClick={() => handleScoreChange(index, scoreLabel.value)}
-                            className={`flex-shrink-0 w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-all ${
+                            className={`w-12 h-12 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-all ${
                               isSelected
-                                ? 'bg-[#6366F1] border-[#6366F1] text-white scale-105 shadow-md'
-                                : 'bg-white border-[#E5E7EB] text-[#71717A] hover:border-[#6366F1]'
+                                ? 'bg-[#4F8EF7] border-[#4F8EF7] text-white scale-105 shadow-md'
+                                : 'bg-white border-slate-300 text-slate-600 hover:border-[#4F8EF7]'
                             }`}
                             title={scoreLabel.description}
                           >
                             {scoreLabel.value}
                           </button>
-                        );
-                      })}
-                    </div>
-                    {/* Labels */}
-                    <div className="flex justify-between text-xs text-[#A1A1AA]">
-                      <span>Strongly Disagree</span>
-                      <span>Strongly Agree</span>
-                    </div>
-                  </div>
-
-                  {/* Response Options - Mobile Vertical */}
-                  <div className="md:hidden space-y-2">
-                    {scoreLabels.map((scoreLabel) => {
-                      const isSelected = currentScore === scoreLabel.value;
-                      return (
-                        <button
-                          key={scoreLabel.value}
-                          onClick={() => handleScoreChange(index, scoreLabel.value)}
-                          className={`w-full p-4 rounded-md border-2 flex items-center gap-4 transition-all ${
-                            isSelected
-                              ? 'bg-[#6366F1] border-[#6366F1] text-white'
-                              : 'bg-white border-[#E5E7EB] text-[#71717A]'
-                          }`}
-                        >
-                          <span className="flex-shrink-0 w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-medium text-sm">
-                            {scoreLabel.value}
-                          </span>
-                          <span className="text-sm font-medium">{scoreLabel.label}</span>
-                        </button>
+                          {/* End labels only */}
+                          {(scoreLabel.value === 1 || scoreLabel.value === 5) && (
+                            <span className="text-xs text-slate-500 text-center max-w-[80px]">
+                              {scoreLabel.value === 1 ? 'Strongly Disagree' : 'Strongly Agree'}
+                            </span>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
@@ -406,58 +398,47 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
               );
             })}
           </div>
-        </div>
-
-        {/* Fixed Footer Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 lg:left-60 bg-white border-t border-[#E5E7EB] py-4">
-          <div className="max-w-[720px] mx-auto px-6 flex justify-between items-center gap-4">
-            <button
-              onClick={handlePrevious}
-              disabled={currentCategoryIndex === 0}
-              className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${
-                currentCategoryIndex === 0
-                  ? 'text-[#A1A1AA] cursor-not-allowed'
-                  : 'text-[#6366F1] hover:text-[#4F46E5]'
-              }`}
-            >
-              ← Previous
-            </button>
-
-            <div className="text-center">
-              {!isCategoryComplete() ? (
-                <p className="text-xs text-[#A1A1AA]">Answer all questions to continue</p>
-              ) : (
-                <p className="text-xs text-[#059669]">✓ Ready to proceed</p>
-              )}
-            </div>
-
-            <button
-              onClick={handleNext}
-              disabled={!isCategoryComplete()}
-              className={`px-5 py-2.5 text-sm font-medium rounded-md transition-all ${
-                !isCategoryComplete()
-                  ? 'bg-[#E5E7EB] text-[#A1A1AA] cursor-not-allowed'
-                  : currentCategoryIndex === totalCategories - 1
-                  ? 'bg-[#059669] text-white hover:bg-[#047857] shadow-sm hover:shadow-md hover:-translate-y-px'
-                  : 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm hover:shadow-md hover:-translate-y-px'
-              }`}
-            >
-              {currentCategoryIndex === totalCategories - 1 ? 'View Results →' : 'Next →'}
-            </button>
-          </div>
-        </div>
+        </main>
       </div>
 
-      {/* Scrollbar hide utility */}
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
+      {/* Sticky Action Bar (bottom) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-4 z-20">
+        <div className="max-w-3xl mx-auto px-4 md:px-6 flex justify-between items-center gap-4">
+          <button
+            onClick={handlePrevious}
+            disabled={currentCategoryIndex === 0}
+            className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${
+              currentCategoryIndex === 0
+                ? 'text-slate-400 cursor-not-allowed'
+                : 'text-[#4F8EF7] hover:text-[#1E40AF]'
+            }`}
+          >
+            ← Previous
+          </button>
+
+          <div className="text-center">
+            {!isCategoryComplete() ? (
+              <p className="text-xs text-slate-500">Answer all questions to continue</p>
+            ) : (
+              <p className="text-xs text-green-600">✓ Ready to proceed</p>
+            )}
+          </div>
+
+          <button
+            onClick={handleNext}
+            disabled={!isCategoryComplete()}
+            className={`px-5 py-2.5 text-sm font-medium rounded-md transition-all ${
+              !isCategoryComplete()
+                ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                : currentCategoryIndex === totalCategories - 1
+                ? 'bg-green-600 text-white hover:bg-green-700 shadow-sm hover:shadow-md'
+                : 'bg-[#4F8EF7] text-white hover:bg-[#1E40AF] shadow-sm hover:shadow-md'
+            }`}
+          >
+            {currentCategoryIndex === totalCategories - 1 ? 'View Results →' : 'Next →'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
