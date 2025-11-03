@@ -4,6 +4,7 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart
 import { jsPDF } from 'jspdf';
 import { assessmentCategories, interpretationGuide } from '../data/assessmentData';
 import { supabase } from '../lib/supabase';
+import { getResultParagraph } from '../data/resultsTexts';
 
 function Results({ assessmentId, responses, onRestart }) {
   const [isSaving, setIsSaving] = useState(true);
@@ -129,7 +130,8 @@ function Results({ assessmentId, responses, onRestart }) {
 
       doc.setFont(undefined, 'normal');
       doc.setTextColor(113, 113, 122); // #71717A
-      const catInterp = doc.splitTextToSize(cat.interpretation.interpretation, pageWidth - 40);
+      const paragraph = getResultParagraph(cat.id, cat.score.average);
+      const catInterp = doc.splitTextToSize(paragraph, pageWidth - 40);
       doc.text(catInterp, 20, yPos + 5);
 
       yPos += 5 + (catInterp.length * 5) + 5;
@@ -227,7 +229,7 @@ function Results({ assessmentId, responses, onRestart }) {
             id: cat.id,
             title: cat.title,
             average: cat.score.average,
-            interpretation: cat.interpretation.interpretation
+            interpretation: getResultParagraph(cat.id, cat.score.average)
           })),
           overallScore: overallAverage,
           overallInterpretation: overallInterpretation.interpretation,
@@ -391,68 +393,55 @@ function Results({ assessmentId, responses, onRestart }) {
           </motion.div>
         </div>
 
-        {/* Details Section - Strengths and Growth Areas */}
-        <div className="space-y-8 mb-12">
-          {/* Strengths */}
-          {strengths.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.4 }}
-            >
-              <h2 className="text-xl font-semibold text-[#18181B] mb-4">Your Strengths</h2>
-              <p className="text-sm text-[#71717A] mb-4">
-                These areas are significant strengths you can leverage in ministry:
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                {strengths.map(cat => (
-                  <div
-                    key={cat.id}
-                    className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-medium text-[#18181B]">{cat.title}</h4>
-                      <span className="flex-shrink-0 ml-3 px-2.5 py-1 bg-[#DCFCE7] text-[#059669] rounded text-sm font-medium">
-                        {cat.score.average.toFixed(2)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-[#71717A] leading-relaxed">{cat.description}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
+        {/* Category Results Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.4 }}
+          className="mb-12"
+        >
+          <h2 className="text-xl font-semibold text-[#18181B] mb-4">Your Results by Category</h2>
+          <p className="text-sm text-[#71717A] mb-4">
+            Each dimension of calling is assessed with personalized guidance based on your score:
+          </p>
+          <div className="grid md:grid-cols-2 gap-4">
+            {categoryResults.map(cat => {
+              const score = cat.score.average;
+              const paragraph = getResultParagraph(cat.id, score);
 
-          {/* Growth Areas */}
-          {growthAreas.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.5 }}
-            >
-              <h2 className="text-xl font-semibold text-[#18181B] mb-4">Growth Areas</h2>
-              <p className="text-sm text-[#71717A] mb-4">
-                These areas need attention and development:
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                {growthAreas.map(cat => (
-                  <div
-                    key={cat.id}
-                    className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="font-medium text-[#18181B]">{cat.title}</h4>
-                      <span className="flex-shrink-0 ml-3 px-2.5 py-1 bg-[#FEF3C7] text-[#D97706] rounded text-sm font-medium">
-                        {cat.score.average.toFixed(2)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-[#71717A] leading-relaxed">{cat.description}</p>
+              // Determine badge color based on score
+              let badgeBg, badgeText;
+              if (score >= 4.5) {
+                badgeBg = 'bg-[#DCFCE7]';
+                badgeText = 'text-[#059669]';
+              } else if (score >= 3.5) {
+                badgeBg = 'bg-[#DBEAFE]';
+                badgeText = 'text-[#2563EB]';
+              } else if (score >= 2.5) {
+                badgeBg = 'bg-[#FEF3C7]';
+                badgeText = 'text-[#D97706]';
+              } else {
+                badgeBg = 'bg-[#FEE2E2]';
+                badgeText = 'text-[#DC2626]';
+              }
+
+              return (
+                <div
+                  key={cat.id}
+                  className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
+                >
+                  <h3 className="font-medium text-[#18181B] mb-3">{cat.title}</h3>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className={`px-2.5 py-1 ${badgeBg} ${badgeText} rounded text-sm font-medium`}>
+                      {score.toFixed(2)} / 5
+                    </span>
                   </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </div>
+                  <p className="text-sm text-[#71717A] leading-relaxed">{paragraph}</p>
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
 
         {/* Next Steps */}
         <motion.div
