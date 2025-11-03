@@ -6,7 +6,6 @@ import EmailCapture from './components/EmailCapture';
 import AboutAssessment from './components/AboutAssessment';
 import Assessment from './components/Assessment';
 import Results from './components/Results';
-import BookRAG from './components/BookRAG';
 import { resolveSession } from './lib/api';
 
 function App() {
@@ -105,29 +104,8 @@ function App() {
               </h1>
             </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setCurrentView('hero')}
-                className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${
-                  currentView !== 'bookRAG'
-                    ? 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm'
-                    : 'bg-transparent text-[#6366F1] border border-[#E5E7EB] hover:bg-[#F9FAFB]'
-                }`}
-              >
-                Assessment
-              </button>
-              <button
-                onClick={() => setCurrentView('bookRAG')}
-                className={`px-5 py-2 text-sm font-medium rounded-md transition-all ${
-                  currentView === 'bookRAG'
-                    ? 'bg-[#6366F1] text-white hover:bg-[#4F46E5] shadow-sm'
-                    : 'bg-transparent text-[#6366F1] border border-[#E5E7EB] hover:bg-[#F9FAFB]'
-                }`}
-              >
-                Search Book
-              </button>
-            </div>
+            {/* Navigation - Title only */}
+            <div></div>
           </div>
         </div>
       </nav>
@@ -167,9 +145,6 @@ function App() {
           responses={responses}
           onRestart={handleRestart}
         />
-      )}
-      {currentView === 'bookRAG' && (
-        <BookRAG />
       )}
     </div>
   );
