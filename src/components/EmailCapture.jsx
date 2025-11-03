@@ -48,6 +48,9 @@ function EmailCapture({ onNext, onBack }) {
         email: formData.email,
         first_name: formData.firstName,
         last_name: formData.lastName,
+        phone: formData.phone,
+        role: formData.role,
+        marital_status: formData.maritalStatus,
         consent: formData.consent,
       });
 
