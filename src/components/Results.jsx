@@ -6,6 +6,40 @@ import { assessmentCategories, interpretationGuide } from '../data/assessmentDat
 import { supabase } from '../lib/supabase';
 import { getResultParagraph } from '../data/resultsTexts';
 
+// Required category IDs
+const REQUIRED_CATEGORY_IDS = ['godliness', 'home_life', 'preaching', 'shepherding', 'evangelism', 'leadership', 'gcc_alignment'];
+
+// Category title mapping
+const CATEGORY_TITLES = {
+  'godliness': 'Are You Godly?',
+  'home_life': 'Is your home healthy?',
+  'preaching': 'Can You Preach?',
+  'shepherding': 'Can You Shepherd?',
+  'evangelism': 'Do You Love the Lost?',
+  'leadership': 'Do You Lead Well?',
+  'gcc_alignment': 'Do We Feel Like Family?'
+};
+
+// Ensure all 7 categories are present
+function ensureSevenCategories(categoryResults) {
+  const resultMap = new Map(categoryResults.map(cat => [cat.id, cat]));
+
+  // Add missing categories with score of 0
+  for (const categoryId of REQUIRED_CATEGORY_IDS) {
+    if (!resultMap.has(categoryId)) {
+      resultMap.set(categoryId, {
+        id: categoryId,
+        title: CATEGORY_TITLES[categoryId] || categoryId,
+        description: '',
+        score: { average: 0, total: 0, count: 0 },
+        interpretation: { level: 'low', interpretation: '' }
+      });
+    }
+  }
+
+  return Array.from(resultMap.values());
+}
+
 function Results({ assessmentId, responses, onRestart }) {
   const [isSaving, setIsSaving] = useState(true);
 
@@ -50,22 +84,30 @@ function Results({ assessmentId, responses, onRestart }) {
     };
   });
 
+  // Ensure all 7 categories are present
+  const allCategoryResults = ensureSevenCategories(categoryResults);
+
   // Calculate overall score
-  const overallAverage = categoryResults.reduce((sum, cat) => sum + cat.score.average, 0) / categoryResults.length;
+  const overallAverage = allCategoryResults.reduce((sum, cat) => sum + cat.score.average, 0) / allCategoryResults.length;
   const overallInterpretation = getInterpretation(overallAverage, 'overall');
 
-  // Identify strengths and growth areas
-  const strengths = categoryResults.filter(cat => cat.score.average >= 4.0);
-  const growthAreas = categoryResults.filter(cat => cat.score.average < 3.5);
+  // Identify strengths and growth areas using 3.6 threshold
+  const strengths = allCategoryResults
+    .filter(cat => cat.score.average >= 3.6)
+    .sort((a, b) => b.score.average - a.score.average); // Sort highest first
+
+  const growthAreas = allCategoryResults
+    .filter(cat => cat.score.average < 3.6)
+    .sort((a, b) => a.score.average - b.score.average); // Sort lowest first
 
   // Prepare data for charts
-  const radarData = categoryResults.map(cat => ({
+  const radarData = allCategoryResults.map(cat => ({
     category: cat.title,
     score: Number(cat.score.average.toFixed(2)),
     fullMark: 5
   }));
 
-  const barData = categoryResults.map(cat => ({
+  const barData = allCategoryResults.map(cat => ({
     name: cat.title.length > 15 ? cat.title.substring(0, 12) + '...' : cat.title,
     score: Number(cat.score.average.toFixed(2))
   }));
@@ -118,7 +160,7 @@ function Results({ assessmentId, responses, onRestart }) {
     yPos += 10;
 
     doc.setFontSize(10);
-    categoryResults.forEach(cat => {
+    allCategoryResults.forEach(cat => {
       if (yPos > 270) {
         doc.addPage();
         yPos = 20;
@@ -225,7 +267,7 @@ function Results({ assessmentId, responses, onRestart }) {
     const saveResults = async () => {
       try {
         const resultsData = {
-          categoryScores: categoryResults.map(cat => ({
+          categoryScores: allCategoryResults.map(cat => ({
             id: cat.id,
             title: cat.title,
             average: cat.score.average,
@@ -321,8 +363,20 @@ function Results({ assessmentId, responses, onRestart }) {
           </p>
         </motion.div>
 
-        {/* Summary Section - 3 Column Grid */}
-        <div className="grid lg:grid-cols-3 gap-6 mb-12">
+        {/* Your Calling Profile Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="mb-12"
+        >
+          <h2 className="text-xl font-semibold text-[#18181B] mb-3">Your Calling Profile</h2>
+          <p className="text-sm text-[#71717A] leading-relaxed mb-6">
+            This overview shows where grace is visible and where maturity is still forming. Treat it as an invitation to deeper dependence on Christ—not a verdict.
+          </p>
+
+          {/* Summary Cards - 3 Column Grid */}
+          <div className="grid lg:grid-cols-3 gap-6">
           {/* Overall Score Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -391,57 +445,103 @@ function Results({ assessmentId, responses, onRestart }) {
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
-        </div>
-
-        {/* Category Results Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-          className="mb-12"
-        >
-          <h2 className="text-xl font-semibold text-[#18181B] mb-4">Your Results by Category</h2>
-          <p className="text-sm text-[#71717A] mb-4">
-            Each dimension of calling is assessed with personalized guidance based on your score:
-          </p>
-          <div className="grid md:grid-cols-2 gap-4">
-            {categoryResults.map(cat => {
-              const score = cat.score.average;
-              const paragraph = getResultParagraph(cat.id, score);
-
-              // Determine badge color based on score
-              let badgeBg, badgeText;
-              if (score >= 4.5) {
-                badgeBg = 'bg-[#DCFCE7]';
-                badgeText = 'text-[#059669]';
-              } else if (score >= 3.5) {
-                badgeBg = 'bg-[#DBEAFE]';
-                badgeText = 'text-[#2563EB]';
-              } else if (score >= 2.5) {
-                badgeBg = 'bg-[#FEF3C7]';
-                badgeText = 'text-[#D97706]';
-              } else {
-                badgeBg = 'bg-[#FEE2E2]';
-                badgeText = 'text-[#DC2626]';
-              }
-
-              return (
-                <div
-                  key={cat.id}
-                  className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
-                >
-                  <h3 className="font-medium text-[#18181B] mb-3">{cat.title}</h3>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className={`px-2.5 py-1 ${badgeBg} ${badgeText} rounded text-sm font-medium`}>
-                      {score.toFixed(2)} / 5
-                    </span>
-                  </div>
-                  <p className="text-sm text-[#71717A] leading-relaxed">{paragraph}</p>
-                </div>
-              );
-            })}
           </div>
         </motion.div>
+
+        {/* Your Strengths Section */}
+        {strengths.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
+            className="mb-12"
+          >
+            <h2 className="text-xl font-semibold text-[#18181B] mb-3">Your Strengths</h2>
+            <p className="text-sm text-[#71717A] leading-relaxed mb-6">
+              These are evidences of grace to steward with humility. Let them fuel service, not self-confidence.
+            </p>
+            <div className="grid md:grid-cols-2 gap-6">
+              {strengths.map(cat => {
+                const score = cat.score.average;
+                const paragraph = getResultParagraph(cat.id, score);
+
+                // Determine badge color based on score
+                let badgeBg, badgeText;
+                if (score >= 4.5) {
+                  badgeBg = 'bg-[#DCFCE7]';
+                  badgeText = 'text-[#059669]';
+                } else if (score >= 3.5) {
+                  badgeBg = 'bg-[#DBEAFE]';
+                  badgeText = 'text-[#2563EB]';
+                } else {
+                  badgeBg = 'bg-[#FEF3C7]';
+                  badgeText = 'text-[#D97706]';
+                }
+
+                return (
+                  <div
+                    key={cat.id}
+                    className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
+                  >
+                    <h3 className="font-medium text-[#18181B] mb-3">{cat.title}</h3>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`px-2.5 py-1 ${badgeBg} ${badgeText} rounded text-sm font-medium`}>
+                        {score.toFixed(2)} / 5
+                      </span>
+                    </div>
+                    <p className="text-sm text-[#71717A] leading-relaxed">{paragraph}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Areas for Growth Section */}
+        {growthAreas.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.5 }}
+            className="mb-12"
+          >
+            <h2 className="text-xl font-semibold text-[#18181B] mb-3">Areas for Growth</h2>
+            <p className="text-sm text-[#71717A] leading-relaxed mb-6">
+              Every calling matures through correction. Use these areas to shape prayer, feedback, and a concrete growth plan.
+            </p>
+            <div className="grid md:grid-cols-2 gap-6">
+              {growthAreas.map(cat => {
+                const score = cat.score.average;
+                const paragraph = getResultParagraph(cat.id, score);
+
+                // Determine badge color based on score
+                let badgeBg, badgeText;
+                if (score >= 2.5) {
+                  badgeBg = 'bg-[#FEF3C7]';
+                  badgeText = 'text-[#D97706]';
+                } else {
+                  badgeBg = 'bg-[#FEE2E2]';
+                  badgeText = 'text-[#DC2626]';
+                }
+
+                return (
+                  <div
+                    key={cat.id}
+                    className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
+                  >
+                    <h3 className="font-medium text-[#18181B] mb-3">{cat.title}</h3>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`px-2.5 py-1 ${badgeBg} ${badgeText} rounded text-sm font-medium`}>
+                        {score.toFixed(2)} / 5
+                      </span>
+                    </div>
+                    <p className="text-sm text-[#71717A] leading-relaxed">{paragraph}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
 
         {/* Next Steps */}
         <motion.div
