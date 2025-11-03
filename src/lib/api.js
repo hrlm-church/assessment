@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
+const SUPABASE_URL = 'https://axrjfkyoaydcuezcaoce.supabase.co';
 
 /**
  * API wrapper for assessment endpoints
@@ -10,10 +10,17 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.
 /**
  * Start a new assessment
  * POST /api/start
+ *
+ * Falls back to direct database insert if edge functions not deployed
  */
 export async function startAssessment({ email, first_name, last_name, consent }) {
+  console.log('Starting assessment for:', email);
+
   try {
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/start-assessment`, {
+    const url = `${SUPABASE_URL}/functions/v1/start-assessment`;
+    console.log('Calling edge function:', url);
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -21,12 +28,21 @@ export async function startAssessment({ email, first_name, last_name, consent })
       body: JSON.stringify({ email, first_name, last_name, consent }),
     });
 
+    console.log('Response status:', response.status);
+
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to start assessment');
+      let errorMessage = 'Failed to start assessment';
+      try {
+        const error = await response.json();
+        errorMessage = error.error || errorMessage;
+      } catch (e) {
+        errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+      }
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
+    console.log('Assessment started:', data.assessmentId);
 
     // Store session token in Supabase client
     if (data.sessionToken) {
@@ -43,8 +59,40 @@ export async function startAssessment({ email, first_name, last_name, consent })
 
     return data;
   } catch (error) {
-    console.error('Start assessment error:', error);
-    throw error;
+    console.error('Edge function error, falling back to direct DB insert:', error);
+
+    // FALLBACK: Use direct database insert (temporary until edge functions deployed)
+    try {
+      console.log('Using fallback direct database insert');
+
+      const { data, error: dbError } = await supabase
+        .from('assessments')
+        .insert([
+          {
+            first_name,
+            last_name,
+            email,
+            consent,
+            responses: {},
+            completed: false
+          }
+        ])
+        .select()
+        .single();
+
+      if (dbError) throw dbError;
+
+      console.log('Assessment created via fallback:', data.id);
+
+      return {
+        assessmentId: data.id,
+        sessionId: null, // No session management in fallback
+        resumeToken: null
+      };
+    } catch (fallbackError) {
+      console.error('Fallback also failed:', fallbackError);
+      throw new Error('Failed to create assessment: ' + fallbackError.message);
+    }
   }
 }
 
