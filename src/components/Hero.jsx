@@ -62,12 +62,12 @@ function Hero({ onNext }) {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-8">
             <button
               onClick={onNext}
-              className="px-5 py-2.5 bg-[#6366F1] text-white text-sm font-medium rounded-md hover:bg-[#4F46E5] transition-all shadow-sm hover:shadow-md hover:-translate-y-px"
+              className="px-5 py-2.5 bg-[#F36233] text-white text-sm font-medium rounded-md hover:bg-[#D44F26] transition-all shadow-sm hover:shadow-md hover:-translate-y-px"
             >
               Start Assessment
             </button>
             <button
-              className="px-5 py-2.5 bg-transparent text-[#6366F1] text-sm font-medium rounded-md border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-all"
+              className="px-5 py-2.5 bg-transparent text-[#F36233] text-sm font-medium rounded-md border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-all"
             >
               Learn More
             </button>
@@ -95,7 +95,7 @@ function Hero({ onNext }) {
               key={index}
               className="group bg-white border border-[#E5E7EB] rounded-lg p-6 transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:-translate-y-px"
             >
-              <div className="text-[#6366F1] mb-4">
+              <div className="text-[#F36233] mb-4">
                 {feature.icon}
               </div>
               <h3 className="text-base font-medium text-[#18181B] mb-2">
