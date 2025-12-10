@@ -207,7 +207,7 @@ Add this to your assessment `src/index.css`:
 }
 
 /* Override assessment colors if needed */
-.bg-\[#6366F1\] {
+.bg-\[#F36233\] {
   background-color: var(--wp-primary) !important;
 }
 ```

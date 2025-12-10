@@ -38,7 +38,7 @@ function GettingStarted({ onNext, onBack }) {
               {[1, 2, 3, 4, 5].map((num) => (
                 <div key={num} className="flex flex-col items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    num === 3 ? 'bg-[#6366F1] text-white' : 'bg-[#F3F4F6] text-[#71717A]'
+                    num === 3 ? 'bg-[#F36233] text-white' : 'bg-[#F3F4F6] text-[#71717A]'
                   }`}>
                     {num}
                   </div>
@@ -63,7 +63,7 @@ function GettingStarted({ onNext, onBack }) {
             <h3 className="text-base font-medium text-[#18181B] mb-4">Time & Structure</h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#6366F1] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <svg className="w-5 h-5 text-[#F36233] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div>
@@ -93,7 +93,7 @@ function GettingStarted({ onNext, onBack }) {
                 { name: 'GCC Alignment', desc: 'Theological and methodological fit' }
               ].map((dim, index) => (
                 <div key={index} className="flex items-start gap-3 pb-3 border-b border-[#F3F4F6] last:border-b-0 last:pb-0">
-                  <svg className="w-5 h-5 text-[#6366F1] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                  <svg className="w-5 h-5 text-[#F36233] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
@@ -110,13 +110,13 @@ function GettingStarted({ onNext, onBack }) {
         <div className="flex justify-between items-center mt-8">
           <button
             onClick={onBack}
-            className="px-5 py-2 text-sm font-medium text-[#6366F1] hover:text-[#4F46E5] transition-colors"
+            className="px-5 py-2 text-sm font-medium text-[#F36233] hover:text-[#D44F26] transition-colors"
           >
             ← Back
           </button>
           <button
             onClick={onNext}
-            className="px-5 py-2.5 bg-[#6366F1] text-white text-sm font-medium rounded-md hover:bg-[#4F46E5] transition-all shadow-sm hover:shadow-md hover:-translate-y-px"
+            className="px-5 py-2.5 bg-[#F36233] text-white text-sm font-medium rounded-md hover:bg-[#D44F26] transition-all shadow-sm hover:shadow-md hover:-translate-y-px"
           >
             Continue →
           </button>

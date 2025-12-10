@@ -36,10 +36,10 @@
    --color-text-tertiary: #A1A1AA;
 
    /* Accent Colors */
-   --color-indigo: #6366F1;
-   --color-indigo-hover: #4F46E5;
-   --color-indigo-light: #A5B4FC;
-   --color-indigo-pale: #C7D2FE;
+   --color-indigo: #F36233;
+   --color-indigo-hover: #D44F26;
+   --color-indigo-light: #FFB79E;
+   --color-indigo-pale: #FFE3D8;
 
    /* Status Colors */
    --color-success: #059669;
@@ -50,8 +50,8 @@
    --color-alert-bg: #FEE2E2;
 
    /* Chart Colors */
-   --color-chart-primary: #818CF8;
-   --color-chart-secondary: #C7D2FE;
+   --color-chart-primary: #F36233;
+   --color-chart-secondary: #FFE3D8;
    --color-chart-grid: #F3F4F6;
 
    /* Shadows - Extremely Subtle */

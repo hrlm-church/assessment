@@ -27,7 +27,7 @@ function AboutAssessment({ onNext, onBack }) {
             className="bg-white border border-[#E5E7EB] rounded-lg p-6"
           >
             <div className="flex items-start gap-4">
-              <svg className="w-6 h-6 text-[#6366F1] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <svg className="w-6 h-6 text-[#F36233] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
               </svg>
               <div>
@@ -91,7 +91,7 @@ function AboutAssessment({ onNext, onBack }) {
                 className="bg-white border border-[#E5E7EB] rounded-lg p-5"
               >
                 <div className="flex items-start gap-3">
-                  <div className="text-[#6366F1] mt-0.5">
+                  <div className="text-[#F36233] mt-0.5">
                     {feature.icon}
                   </div>
                   <div>
@@ -119,7 +119,7 @@ function AboutAssessment({ onNext, onBack }) {
                 "Get actionable next steps for your calling journey"
               ].map((step, index) => (
                 <li key={index} className="flex gap-3 items-start text-sm text-[#71717A]">
-                  <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-[#6366F1] text-white font-medium rounded-full text-xs">
+                  <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 bg-[#F36233] text-white font-medium rounded-full text-xs">
                     {index + 1}
                   </span>
                   <span className="pt-0.5">{step}</span>
@@ -133,7 +133,7 @@ function AboutAssessment({ onNext, onBack }) {
         <div className="flex justify-between items-center mt-8">
           <button
             onClick={onBack}
-            className="px-5 py-2 text-sm font-medium text-[#6366F1] hover:text-[#4F46E5] transition-colors"
+            className="px-5 py-2 text-sm font-medium text-[#F36233] hover:text-[#D44F26] transition-colors"
           >
             ← Previous
           </button>

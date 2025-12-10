@@ -100,7 +100,7 @@ function EmailCapture({ onNext, onBack }) {
                   onChange={handleChange}
                   className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
                     errors.firstName ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
-                  } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
+                  } rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFB79E] focus:ring-offset-2 transition-all`}
                   placeholder="John"
                 />
                 {errors.firstName && (
@@ -119,7 +119,7 @@ function EmailCapture({ onNext, onBack }) {
                   onChange={handleChange}
                   className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
                     errors.lastName ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
-                  } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
+                  } rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFB79E] focus:ring-offset-2 transition-all`}
                   placeholder="Doe"
                 />
                 {errors.lastName && (
@@ -140,7 +140,7 @@ function EmailCapture({ onNext, onBack }) {
                 onChange={handleChange}
                 className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
                   errors.email ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFB79E] focus:ring-offset-2 transition-all`}
                 placeholder="john@example.com"
               />
               {errors.email && (
@@ -158,7 +158,7 @@ function EmailCapture({ onNext, onBack }) {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 text-[15px] bg-white border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all"
+                className="w-full px-4 py-2.5 text-[15px] bg-white border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFB79E] focus:ring-offset-2 transition-all"
                 placeholder="+1 (555) 000-0000"
               />
             </div>
@@ -174,7 +174,7 @@ function EmailCapture({ onNext, onBack }) {
                 onChange={handleChange}
                 className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
                   errors.role ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFB79E] focus:ring-offset-2 transition-all`}
               >
                 <option value="">—Please choose an option—</option>
                 <option value="plant">I hope to plant a church</option>
@@ -198,7 +198,7 @@ function EmailCapture({ onNext, onBack }) {
                 onChange={handleChange}
                 className={`w-full px-4 py-2.5 text-[15px] bg-white border ${
                   errors.maritalStatus ? 'border-[#DC2626]' : 'border-[#E5E7EB]'
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2 transition-all`}
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFB79E] focus:ring-offset-2 transition-all`}
               >
                 <option value="">—Please choose an option—</option>
                 <option value="married">Married</option>
@@ -218,7 +218,7 @@ function EmailCapture({ onNext, onBack }) {
                   id="consent"
                   checked={formData.consent}
                   onChange={handleChange}
-                  className="mt-1 w-4 h-4 text-[#6366F1] border-[#E5E7EB] rounded focus:ring-2 focus:ring-[#A5B4FC] focus:ring-offset-2"
+                  className="mt-1 w-4 h-4 text-[#F36233] border-[#E5E7EB] rounded focus:ring-2 focus:ring-[#FFB79E] focus:ring-offset-2"
                 />
                 <div className="flex-1">
                   <label htmlFor="consent" className="text-[13px] text-[#71717A] leading-relaxed cursor-pointer">
@@ -244,14 +244,14 @@ function EmailCapture({ onNext, onBack }) {
                 type="button"
                 onClick={onBack}
                 disabled={isSubmitting}
-                className="px-5 py-2 text-sm font-medium text-[#6366F1] hover:text-[#4F46E5] transition-colors disabled:opacity-40"
+                className="px-5 py-2 text-sm font-medium text-[#F36233] hover:text-[#D44F26] transition-colors disabled:opacity-40"
               >
                 ← Back
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-5 py-2.5 bg-[#6366F1] text-white text-sm font-medium rounded-md hover:bg-[#4F46E5] transition-all shadow-sm hover:shadow-md hover:-translate-y-px disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 bg-[#F36233] text-white text-sm font-medium rounded-md hover:bg-[#D44F26] transition-all shadow-sm hover:shadow-md hover:-translate-y-px disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Saving...' : 'Next →'}
               </button>

@@ -127,7 +127,7 @@ function Results({ assessmentId, responses, onRestart }) {
 
     // Header
     doc.setFontSize(24);
-    doc.setTextColor(99, 102, 241); // #6366F1 indigo
+    doc.setTextColor(243, 98, 51); // #F36233 indigo
     doc.text('AM I CALLED?', pageWidth / 2, 20, { align: 'center' });
 
     doc.setFontSize(16);
@@ -144,7 +144,7 @@ function Results({ assessmentId, responses, onRestart }) {
     doc.text('Overall Score', 20, 50);
 
     doc.setFontSize(20);
-    doc.setTextColor(99, 102, 241); // #6366F1
+    doc.setTextColor(243, 98, 51); // #F36233
     doc.text(`${overallAverage.toFixed(2)} / 5.0`, 20, 60);
 
     doc.setFontSize(10);
@@ -325,7 +325,7 @@ function Results({ assessmentId, responses, onRestart }) {
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#6366F1"
+            stroke="#F36233"
             strokeWidth={strokeWidth}
             fill="none"
             strokeDasharray={circumference}
@@ -419,10 +419,10 @@ function Results({ assessmentId, responses, onRestart }) {
                 <Radar
                   name="Score"
                   dataKey="score"
-                  stroke="#6366F1"
+                  stroke="#F36233"
                   fill="transparent"
                   strokeWidth={2}
-                  dot={{ fill: '#6366F1', r: 3 }}
+                  dot={{ fill: '#F36233', r: 3 }}
                 />
               </RadarChart>
             </ResponsiveContainer>
@@ -595,10 +595,10 @@ function Results({ assessmentId, responses, onRestart }) {
                 className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="flex-shrink-0 w-8 h-8 bg-[#6366F1] text-white rounded-full flex items-center justify-center text-sm font-medium">
+                  <div className="flex-shrink-0 w-8 h-8 bg-[#F36233] text-white rounded-full flex items-center justify-center text-sm font-medium">
                     {index + 1}
                   </div>
-                  <div className="text-[#6366F1]">{step.icon}</div>
+                  <div className="text-[#F36233]">{step.icon}</div>
                 </div>
                 <h4 className="font-medium text-[#18181B] mb-2">{step.title}</h4>
                 <p className="text-sm text-[#71717A] leading-relaxed">{step.description}</p>
@@ -626,7 +626,7 @@ function Results({ assessmentId, responses, onRestart }) {
             </button>
             <button
               onClick={onRestart}
-              className="px-6 py-2.5 bg-transparent text-[#6366F1] text-sm font-medium rounded-md border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-all"
+              className="px-6 py-2.5 bg-transparent text-[#F36233] text-sm font-medium rounded-md border border-[#E5E7EB] hover:bg-[#F9FAFB] transition-all"
             >
               Start New Assessment
             </button>
