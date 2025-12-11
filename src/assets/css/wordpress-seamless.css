@@ -1,0 +1,111 @@
+/**
+ * WordPress Seamless Integration Styles
+ * Makes the assessment blend perfectly with WordPress themes
+ */
+
+/* Remove default margins/padding when embedded */
+body.wordpress-embedded {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  overflow-x: hidden !important;
+}
+
+/* Make root container transparent and full-width */
+body.wordpress-embedded #root {
+  background: transparent !important;
+}
+
+body.wordpress-embedded > div,
+body.wordpress-embedded #root > div {
+  background: transparent !important;
+  min-height: auto !important;
+}
+
+/* Make all background colors transparent to inherit WordPress theme */
+.wordpress-embedded .bg-\[#FAFAFA\],
+.wordpress-embedded [class*="bg-[#FAFAFA]"],
+.wordpress-embedded [style*="background-color: rgb(250, 250, 250)"] {
+  background-color: transparent !important;
+}
+
+/* Reduce vertical padding for tighter integration */
+.wordpress-embedded .py-16 {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.wordpress-embedded .py-8 {
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+/* Match WordPress content width (adjust to your theme) */
+.wordpress-embedded .max-w-\[720px\],
+.wordpress-embedded .max-w-7xl {
+  max-width: 1140px !important; /* Standard WordPress content width */
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+/* Remove shadows for seamless integration */
+.wordpress-embedded .shadow-sm,
+.wordpress-embedded .shadow-md,
+.wordpress-embedded .shadow-lg,
+.wordpress-embedded [class*="shadow-"],
+.wordpress-embedded [style*="box-shadow"] {
+  box-shadow: none !important;
+}
+
+/* Remove borders that create visual separation */
+.wordpress-embedded .border-t,
+.wordpress-embedded .border-b {
+  border-top-width: 0 !important;
+  border-bottom-width: 0 !important;
+}
+
+/* Ensure white cards blend well */
+.wordpress-embedded .bg-white {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+/* Adjust card borders for subtle separation */
+.wordpress-embedded .border-\[#E5E7EB\] {
+  border-color: #E5E7EB !important;
+}
+
+/* Remove sticky navigation when embedded */
+.wordpress-embedded .sticky {
+  position: relative !important;
+}
+
+/* Ensure proper spacing between sections */
+.wordpress-embedded .space-y-4 > * + * {
+  margin-top: 1rem !important;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .wordpress-embedded .max-w-\[720px\],
+  .wordpress-embedded .max-w-7xl {
+    max-width: 100% !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .wordpress-embedded .py-16 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+}
+
+/* Prevent overflow issues in WordPress */
+.wordpress-embedded * {
+  max-width: 100%;
+}
+
+/* Smooth transitions for better UX */
+.wordpress-embedded {
+  transition: all 0.2s ease-in-out;
+}

@@ -1,0 +1,83 @@
+<!--
+  WordPress Page Code for Seamless Assessment Integration
+  Add this to your WordPress page in the HTML/Code editor
+-->
+
+<!-- Assessment Container -->
+<div class="assessment-wrapper" style="width: 100%; margin: 0; padding: 0;">
+  <iframe
+    id="assessment-iframe"
+    src="https://revdaveharvey.com/assessment/?embedded=true"
+    style="width: 100%; border: none; display: block; overflow: hidden;"
+    title="Am I Called? Assessment"
+    loading="eager"
+    scrolling="no"
+  ></iframe>
+</div>
+
+<!-- Auto-Resize Script -->
+<script>
+(function() {
+  const iframe = document.getElementById('assessment-iframe');
+
+  // Listen for height changes from the assessment
+  window.addEventListener('message', function(event) {
+    // Security: Only accept messages from your domain
+    if (event.origin !== 'https://revdaveharvey.com') {
+      return;
+    }
+
+    // Handle resize messages
+    if (event.data && event.data.type === 'assessment-resize') {
+      const height = event.data.height;
+      if (height && height > 0) {
+        iframe.style.height = (height + 50) + 'px'; // Add 50px buffer
+      }
+    }
+  });
+
+  // Set initial height
+  iframe.style.height = '800px';
+
+  // Fallback: Try to resize on load
+  iframe.addEventListener('load', function() {
+    setTimeout(function() {
+      try {
+        const iframeHeight = iframe.contentWindow.document.body.scrollHeight;
+        if (iframeHeight > 0) {
+          iframe.style.height = (iframeHeight + 50) + 'px';
+        }
+      } catch(e) {
+        // Cross-origin restriction, rely on postMessage
+        console.log('Using postMessage for height updates');
+      }
+    }, 500);
+  });
+})();
+</script>
+
+<!-- Optional: Remove WordPress page styling for full-width -->
+<style>
+/* Make the assessment page full-width */
+.assessment-wrapper {
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  max-width: 100vw;
+  width: 100vw;
+}
+
+/* Remove padding from WordPress content area */
+body.page .entry-content {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Optional: Hide WordPress header/footer on this page only
+   Replace XXX with your page ID */
+/*
+body.page-id-XXX .site-header,
+body.page-id-XXX .site-footer {
+  display: none;
+}
+*/
+</style>
