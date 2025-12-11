@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './assets/css/tailwind.css';
+import './assets/css/wordpress-seamless.css';
 import Hero from './components/Hero';
 import GettingStarted from './components/GettingStarted';
 import EmailCapture from './components/EmailCapture';
@@ -9,7 +10,11 @@ import Results from './components/Results';
 import { resolveSession } from './lib/api';
 
 function App() {
-  const [currentView, setCurrentView] = useState('hero');
+  // Detect if embedded in WordPress
+  const isEmbedded = window.location !== window.parent.location ||
+                     new URLSearchParams(window.location.search).get('embedded') === 'true';
+
+  const [currentView, setCurrentView] = useState(isEmbedded ? 'getting-started' : 'hero');
   const [assessmentId, setAssessmentId] = useState(null); // Supabase record ID
   const [sessionId, setSessionId] = useState(null);
   const [responses, setResponses] = useState({});
@@ -24,6 +29,49 @@ function App() {
       handleResumeSession(resumeToken);
     }
   }, []);
+
+  // Add WordPress embedded class to body
+  useEffect(() => {
+    if (isEmbedded) {
+      document.body.classList.add('wordpress-embedded');
+    }
+    return () => {
+      document.body.classList.remove('wordpress-embedded');
+    };
+  }, [isEmbedded]);
+
+  // Report height changes to parent window (for seamless iframe integration)
+  useEffect(() => {
+    if (!isEmbedded) return;
+
+    const reportHeight = () => {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({
+        type: 'assessment-resize',
+        height: height
+      }, '*');
+    };
+
+    // Report initial height
+    reportHeight();
+
+    // Report on resize
+    window.addEventListener('resize', reportHeight);
+
+    // Report on DOM changes
+    const observer = new MutationObserver(reportHeight);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true
+    });
+
+    return () => {
+      window.removeEventListener('resize', reportHeight);
+      observer.disconnect();
+    };
+  }, [isEmbedded, currentView]);
 
   const handleResumeSession = async (token) => {
     setIsResuming(true);
@@ -92,23 +140,25 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
-      {/* Navigation Header - Minimal, Floating */}
-      <nav className="sticky top-0 z-50 bg-[#FAFAFA]/80 backdrop-blur-lg border-b border-[#E5E7EB]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Wordmark */}
-            <div className="flex items-center">
-              <h1 className="text-lg font-semibold text-[#18181B] tracking-tight">
-                Am I Called?
-              </h1>
-            </div>
+    <div className={`min-h-screen ${isEmbedded ? 'bg-transparent' : 'bg-[#FAFAFA]'}`}>
+      {/* Navigation Header - Hidden when embedded in WordPress */}
+      {!isEmbedded && (
+        <nav className="sticky top-0 z-50 bg-[#FAFAFA]/80 backdrop-blur-lg border-b border-[#E5E7EB]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              {/* Wordmark */}
+              <div className="flex items-center">
+                <h1 className="text-lg font-semibold text-[#18181B] tracking-tight">
+                  Am I Called?
+                </h1>
+              </div>
 
-            {/* Navigation - Title only */}
-            <div></div>
+              {/* Navigation - Title only */}
+              <div></div>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
 
       {currentView === 'hero' && (
         <Hero onNext={() => setCurrentView('gettingStarted')} />
