@@ -14,7 +14,7 @@ function App() {
   const isEmbedded = window.location !== window.parent.location ||
                      new URLSearchParams(window.location.search).get('embedded') === 'true';
 
-  const [currentView, setCurrentView] = useState(isEmbedded ? 'getting-started' : 'hero');
+  const [currentView, setCurrentView] = useState(isEmbedded ? 'gettingStarted' : 'hero');
   const [assessmentId, setAssessmentId] = useState(null); // Supabase record ID
   const [sessionId, setSessionId] = useState(null);
   const [responses, setResponses] = useState({});
