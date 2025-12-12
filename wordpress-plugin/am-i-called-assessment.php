@@ -21,7 +21,7 @@ function amic_assessment_shortcode($atts) {
     // Parse attributes
     $atts = shortcode_atts(array(
         'height' => '100vh',
-        'url' => 'https://revdaveharvey.com/assessment/',
+        'url' => 'https://assessment-lac.vercel.app/',
     ), $atts);
 
     // Sanitize
@@ -50,7 +50,7 @@ function amic_assessment_shortcode($atts) {
         // Auto-resize iframe based on content messages
         window.addEventListener('message', function(e) {
             // Only accept messages from our assessment domain
-            if (e.origin === 'https://revdaveharvey.com') {
+            if (e.origin === 'https://assessment-lac.vercel.app') {
                 var iframe = document.getElementById('<?php echo $id; ?>');
                 if (e.data.height && iframe) {
                     iframe.style.height = e.data.height + 'px';
