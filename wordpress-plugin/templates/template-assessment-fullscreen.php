@@ -40,7 +40,7 @@ if (!defined('ABSPATH')) {
         // Get URL from page meta or use default
         $url = get_post_meta(get_the_ID(), 'assessment_url', true);
         if (empty($url)) {
-            $url = 'https://assessment-lac.vercel.app/';
+            $url = 'https://revdaveharvey.com/assessment/';
         }
         ?>
         <iframe
