@@ -10,11 +10,10 @@ import Results from './components/Results';
 import { resolveSession } from './lib/api';
 
 function App() {
-  // Detect if embedded in WordPress
-  const isEmbedded = window.location !== window.parent.location ||
-                     new URLSearchParams(window.location.search).get('embedded') === 'true';
+  // Detect if embedded in WordPress - only check URL parameter
+  const isEmbedded = new URLSearchParams(window.location.search).get('embedded') === 'true';
 
-  const [currentView, setCurrentView] = useState(isEmbedded ? 'gettingStarted' : 'hero');
+  const [currentView, setCurrentView] = useState('hero'); // Always start at hero
   const [assessmentId, setAssessmentId] = useState(null); // Supabase record ID
   const [sessionId, setSessionId] = useState(null);
   const [responses, setResponses] = useState({});
