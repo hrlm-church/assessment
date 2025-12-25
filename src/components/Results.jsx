@@ -5,6 +5,8 @@ import { jsPDF } from 'jspdf';
 import { assessmentCategories, interpretationGuide } from '../data/assessmentData';
 import { supabase } from '../lib/supabase';
 import { getResultParagraph } from '../data/resultsTexts';
+import { guidanceVideos } from '../data/guidanceVideos';
+import VideoPlayer from './VideoPlayer';
 
 // Required category IDs
 const REQUIRED_CATEGORY_IDS = ['godliness', 'home_life', 'preaching', 'shepherding', 'evangelism', 'leadership', 'gcc_alignment'];
@@ -607,11 +609,46 @@ function Results({ assessmentId, responses, onRestart }) {
           </div>
         </motion.div>
 
-        {/* Actions Footer */}
+        {/* Guidance Videos Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.7 }}
+          className="mb-12"
+        >
+          <h2 className="text-xl font-semibold text-[#18181B] mb-3">Guidance Videos</h2>
+          <p className="text-sm text-[#71717A] leading-relaxed mb-6">
+            Watch these videos to understand your results and learn about the next steps in your journey.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6">
+            {guidanceVideos.map((video, index) => (
+              <motion.div
+                key={video.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 * index }}
+                className="bg-white border border-[#E5E7EB] rounded-lg p-5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
+              >
+                <div className="mb-4">
+                  <VideoPlayer vimeoId={video.vimeoId} title={video.title} />
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex-shrink-0 w-6 h-6 bg-[#F36233] text-white rounded-full flex items-center justify-center text-xs font-medium">
+                    {video.order}
+                  </div>
+                  <h3 className="font-medium text-[#18181B]">{video.title}</h3>
+                </div>
+                <p className="text-sm text-[#71717A] leading-relaxed">{video.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Actions Footer */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.8 }}
           className="bg-white border border-[#E5E7EB] rounded-lg p-8"
         >
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
