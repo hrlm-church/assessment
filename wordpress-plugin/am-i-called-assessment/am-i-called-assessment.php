@@ -4,8 +4,8 @@
  * Plugin URI: https://revdaveharvey.com
  * Description: Dave Harvey's "Am I Called?" pastoral calling assessment tool. Use shortcode [am_i_called_assessment] to display the assessment on any page.
  * Version: 1.1.0
- * Author: Dave Harvey
- * Author URI: https://revdaveharvey.com
+ * Author: Digital Culture
+ * Author URI: https://godigitalculture.com/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: am-i-called-assessment
