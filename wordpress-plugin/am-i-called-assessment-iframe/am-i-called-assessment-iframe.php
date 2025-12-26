@@ -3,7 +3,7 @@
  * Plugin Name: Am I Called Assessment (iFrame)
  * Plugin URI: https://revdaveharvey.com
  * Description: Dave Harvey's "Am I Called?" pastoral calling assessment tool. Use shortcode [am_i_called_assessment] to display the assessment. iFrame version using Vercel deployment.
- * Version: 2.0.1
+ * Version: 2.0.2
  * Author: Digital Culture
  * Author URI: https://godigitalculture.com/
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AICA_IFRAME_VERSION', '2.0.1');
+define('AICA_IFRAME_VERSION', '2.0.2');
 define('AICA_IFRAME_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AICA_IFRAME_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -98,27 +98,7 @@ function aica_iframe_render_assessment() {
             overflow-y: auto !important;
         }
 
-        /* Loading indicator */
-        .aica-loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #F36233;
-            font-size: 18px;
-        }
-
-        .aica-loading::after {
-            content: "...";
-            animation: aica-dots 1.5s steps(4, end) infinite;
-        }
-
-        @keyframes aica-dots {
-            0%, 20% { content: "."; }
-            40% { content: ".."; }
-            60%, 100% { content: "..."; }
-        }
+        /* No loading indicator - removed to prevent issues */
     </style>
 
     <script>
@@ -171,37 +151,11 @@ function aica_iframe_render_assessment() {
                 }
             });
 
-            // Hide loading indicator when iframe loads
-            function hideLoading() {
-                var loading = document.querySelector(".aica-loading");
-                if (loading) {
-                    loading.style.display = "none";
-                }
-            }
-
-            // Wait for iframe to be available, then listen to its load event
-            function setupIframeLoadListener() {
-                var iframe = document.querySelector(".aica-iframe-container iframe");
-                if (iframe) {
-                    iframe.addEventListener("load", function() {
-                        hideLoading();
-                    });
-                } else {
-                    // If iframe not found, try again in 100ms
-                    setTimeout(setupIframeLoadListener, 100);
-                }
-            }
-
-            if (document.readyState === "loading") {
-                document.addEventListener("DOMContentLoaded", setupIframeLoadListener);
-            } else {
-                setupIframeLoadListener();
-            }
+            // No loading indicator JavaScript needed
         })();
     </script>
 
     <div class="aica-iframe-container">
-        <div class="aica-loading">Loading Assessment</div>
         <iframe
             src="' . esc_url($iframe_url) . '"
             title="Am I Called Assessment"
