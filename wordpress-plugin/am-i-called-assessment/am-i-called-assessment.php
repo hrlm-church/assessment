@@ -3,7 +3,7 @@
  * Plugin Name: Am I Called Assessment
  * Plugin URI: https://revdaveharvey.com
  * Description: Dave Harvey's "Am I Called?" pastoral calling assessment tool. Use shortcode [am_i_called_assessment] to display the assessment on any page.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Digital Culture
  * Author URI: https://godigitalculture.com/
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AICA_VERSION', '1.1.0');
+define('AICA_VERSION', '1.1.1');
 define('AICA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AICA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -112,24 +112,35 @@ function aica_add_type_attribute($tag, $handle, $src) {
  * Shortcode to render the assessment app
  */
 function aica_render_assessment() {
-    // Add custom styles to fix scrolling and layout issues
+    // NUCLEAR OPTION: Ultra-aggressive CSS to force no scrolling
     $custom_css = '
     <style id="aica-fix-styles">
-        /* CRITICAL: Fix Elementor and page builder overflow/height constraints */
+        /* NUCLEAR: Override ALL Elementor containers */
+        .elementor *,
         .elementor-widget-shortcode,
-        .elementor-widget-shortcode > .elementor-widget-container,
+        .elementor-widget-shortcode *,
+        .elementor-widget-container,
         .elementor-element,
         .elementor-container,
         .e-con,
-        .e-container {
+        .e-container,
+        .e-con-inner,
+        .elementor-section,
+        .elementor-column,
+        .elementor-column-wrap,
+        .elementor-widget-wrap,
+        div[data-elementor-type],
+        div[data-elementor-id] {
             overflow: visible !important;
             height: auto !important;
             min-height: 0 !important;
             max-height: none !important;
         }
 
-        /* React app root container - must be auto height */
-        #root {
+        /* CRITICAL: React app root - MUST be auto height */
+        #root,
+        #root > *,
+        #root > div {
             overflow: visible !important;
             height: auto !important;
             min-height: 100vh !important;
@@ -137,18 +148,19 @@ function aica_render_assessment() {
             display: block !important;
         }
 
-        /* Ensure all parent containers allow natural flow */
+        /* Force ALL parents to allow natural flow */
+        body.am-i-called-assessment-active *,
+        body.am-i-called-assessment-active div,
+        body.am-i-called-assessment-active section,
         body.am-i-called-assessment-active .elementor,
         body.am-i-called-assessment-active .elementor-section,
-        body.am-i-called-assessment-active .elementor-column,
-        body.am-i-called-assessment-active .elementor-column-wrap,
-        body.am-i-called-assessment-active .elementor-widget-wrap {
+        body.am-i-called-assessment-active .elementor-column {
             overflow: visible !important;
             height: auto !important;
             min-height: 0 !important;
         }
 
-        /* Hide WordPress header/footer for seamless experience */
+        /* Hide WordPress header/footer */
         .aica-fullpage-mode .site-header,
         .aica-fullpage-mode .site-footer,
         .aica-fullpage-mode .breadcrumbs,
@@ -166,51 +178,115 @@ function aica_render_assessment() {
             margin: 0 !important;
         }
 
-        /* Ensure body allows natural scroll */
+        /* Body scroll only - NEVER container scroll */
         body.am-i-called-assessment-active {
-            margin: 0;
-            padding: 0;
+            margin: 0 !important;
+            padding: 0 !important;
             overflow-x: hidden !important;
             overflow-y: auto !important;
         }
 
-        /* Fix any theme-specific containers */
-        .am-i-called-assessment-active main,
-        .am-i-called-assessment-active article,
-        .am-i-called-assessment-active .entry-content {
+        /* Prevent ALL containers from creating their own scroll */
+        body.am-i-called-assessment-active main,
+        body.am-i-called-assessment-active article,
+        body.am-i-called-assessment-active .entry-content,
+        body.am-i-called-assessment-active .elementor-widget-shortcode,
+        body.am-i-called-assessment-active .e-con {
             overflow: visible !important;
             height: auto !important;
+            max-height: none !important;
         }
     </style>
     <script>
-        // Add class to body and fix container constraints
-        document.addEventListener("DOMContentLoaded", function() {
-            document.body.classList.add("am-i-called-assessment-active");
+        // AGGRESSIVE: Remove ALL height constraints via JavaScript
+        (function() {
+            function forceRemoveHeightConstraints() {
+                // Add body class
+                document.body.classList.add("am-i-called-assessment-active");
 
-            // Find the React root
-            var root = document.getElementById("root");
-            if (root) {
-                // Add fullpage mode class to parent elements
+                // Find root
+                var root = document.getElementById("root");
+                if (!root) return;
+
+                // Add fullpage class to parent
                 var parent = root.closest(".entry-content, article, main");
                 if (parent) {
                     parent.classList.add("aica-fullpage-mode");
                 }
 
-                // Force remove any inline height styles on Elementor containers
-                var elementorContainers = root.closest(".elementor-widget-shortcode, .e-con, .elementor-element");
-                if (elementorContainers) {
-                    var current = root;
-                    while (current && current !== document.body) {
-                        if (current.style) {
-                            current.style.height = "auto";
-                            current.style.maxHeight = "none";
-                            current.style.overflow = "visible";
-                        }
-                        current = current.parentElement;
+                // NUCLEAR: Traverse ALL parents and force remove constraints
+                var current = root;
+                var iterations = 0;
+                while (current && current !== document.documentElement && iterations < 50) {
+                    if (current.style) {
+                        current.style.setProperty("height", "auto", "important");
+                        current.style.setProperty("max-height", "none", "important");
+                        current.style.setProperty("min-height", "0", "important");
+                        current.style.setProperty("overflow", "visible", "important");
+                        current.style.setProperty("overflow-y", "visible", "important");
                     }
+
+                    // Remove height-related attributes
+                    if (current.hasAttribute) {
+                        ["data-height", "data-min-height", "data-max-height"].forEach(function(attr) {
+                            if (current.hasAttribute(attr)) {
+                                current.removeAttribute(attr);
+                            }
+                        });
+                    }
+
+                    current = current.parentElement;
+                    iterations++;
                 }
+
+                // Also force on Elementor-specific selectors
+                var elementorContainers = document.querySelectorAll(
+                    ".elementor-widget-shortcode, .e-con, .elementor-element, .elementor-container, " +
+                    ".elementor-section, .elementor-column, .elementor-widget-wrap"
+                );
+                elementorContainers.forEach(function(el) {
+                    if (el.contains(root) || root.contains(el)) {
+                        el.style.setProperty("height", "auto", "important");
+                        el.style.setProperty("max-height", "none", "important");
+                        el.style.setProperty("overflow", "visible", "important");
+                    }
+                });
             }
-        });
+
+            // Run on DOM ready
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", forceRemoveHeightConstraints);
+            } else {
+                forceRemoveHeightConstraints();
+            }
+
+            // Run again after a short delay (in case Elementor modifies things)
+            setTimeout(forceRemoveHeightConstraints, 100);
+            setTimeout(forceRemoveHeightConstraints, 500);
+            setTimeout(forceRemoveHeightConstraints, 1000);
+
+            // Watch for changes and re-apply (Elementor editor mode)
+            if (window.MutationObserver) {
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.attributeName === "style") {
+                            forceRemoveHeightConstraints();
+                        }
+                    });
+                });
+
+                setTimeout(function() {
+                    var root = document.getElementById("root");
+                    if (root && root.parentElement) {
+                        observer.observe(root.parentElement, {
+                            attributes: true,
+                            attributeFilter: ["style", "class"],
+                            subtree: true
+                        });
+                    }
+                }, 1000);
+            }
+        })();
     </script>
     ';
 
