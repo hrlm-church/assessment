@@ -3,7 +3,7 @@
  * Plugin Name: Am I Called Assessment
  * Plugin URI: https://revdaveharvey.com
  * Description: Dave Harvey's "Am I Called?" pastoral calling assessment tool. Use shortcode [am_i_called_assessment] to display the assessment on any page.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: Digital Culture
  * Author URI: https://godigitalculture.com/
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AICA_VERSION', '1.1.2');
+define('AICA_VERSION', '1.1.3');
 define('AICA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AICA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
