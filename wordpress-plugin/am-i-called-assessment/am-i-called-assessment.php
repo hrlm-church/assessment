@@ -3,7 +3,7 @@
  * Plugin Name: Am I Called Assessment
  * Plugin URI: https://revdaveharvey.com
  * Description: Dave Harvey's "Am I Called?" pastoral calling assessment tool. Use shortcode [am_i_called_assessment] to display the assessment on any page.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: Digital Culture
  * Author URI: https://godigitalculture.com/
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AICA_VERSION', '1.1.1');
+define('AICA_VERSION', '1.1.2');
 define('AICA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AICA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -112,35 +112,29 @@ function aica_add_type_attribute($tag, $handle, $src) {
  * Shortcode to render the assessment app
  */
 function aica_render_assessment() {
-    // NUCLEAR OPTION: Ultra-aggressive CSS to force no scrolling
+    // SCOPED FIX: Only target Elementor containers, NOT React app internals
     $custom_css = '
     <style id="aica-fix-styles">
-        /* NUCLEAR: Override ALL Elementor containers */
-        .elementor *,
-        .elementor-widget-shortcode,
-        .elementor-widget-shortcode *,
-        .elementor-widget-container,
-        .elementor-element,
-        .elementor-container,
-        .e-con,
-        .e-container,
-        .e-con-inner,
-        .elementor-section,
-        .elementor-column,
-        .elementor-column-wrap,
-        .elementor-widget-wrap,
-        div[data-elementor-type],
-        div[data-elementor-id] {
+        /* ONLY target Elementor containers that CONTAIN #root */
+        /* DO NOT apply to elements INSIDE #root (React app) */
+
+        .elementor-widget-shortcode:has(#root),
+        .elementor-widget-container:has(#root),
+        .elementor-element:has(#root),
+        .elementor-container:has(#root),
+        .e-con:has(#root),
+        .e-container:has(#root),
+        .elementor-section:has(#root),
+        .elementor-column:has(#root),
+        .elementor-widget-wrap:has(#root) {
             overflow: visible !important;
             height: auto !important;
             min-height: 0 !important;
             max-height: none !important;
         }
 
-        /* CRITICAL: React app root - MUST be auto height */
-        #root,
-        #root > *,
-        #root > div {
+        /* React app root container */
+        #root {
             overflow: visible !important;
             height: auto !important;
             min-height: 100vh !important;
@@ -148,144 +142,66 @@ function aica_render_assessment() {
             display: block !important;
         }
 
-        /* Force ALL parents to allow natural flow */
-        body.am-i-called-assessment-active *,
-        body.am-i-called-assessment-active div,
-        body.am-i-called-assessment-active section,
-        body.am-i-called-assessment-active .elementor,
-        body.am-i-called-assessment-active .elementor-section,
-        body.am-i-called-assessment-active .elementor-column {
-            overflow: visible !important;
-            height: auto !important;
-            min-height: 0 !important;
-        }
-
-        /* Hide WordPress header/footer */
-        .aica-fullpage-mode .site-header,
-        .aica-fullpage-mode .site-footer,
-        .aica-fullpage-mode .breadcrumbs,
-        .aica-fullpage-mode .entry-header {
-            display: none !important;
-        }
-
-        /* Make content full width */
-        .aica-fullpage-mode .site-content,
-        .aica-fullpage-mode .content-area,
-        .aica-fullpage-mode .entry-content {
-            max-width: 100% !important;
-            width: 100% !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-
-        /* Body scroll only - NEVER container scroll */
+        /* Ensure body allows scroll */
         body.am-i-called-assessment-active {
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow-x: hidden !important;
             overflow-y: auto !important;
         }
 
-        /* Prevent ALL containers from creating their own scroll */
-        body.am-i-called-assessment-active main,
-        body.am-i-called-assessment-active article,
-        body.am-i-called-assessment-active .entry-content,
-        body.am-i-called-assessment-active .elementor-widget-shortcode,
-        body.am-i-called-assessment-active .e-con {
-            overflow: visible !important;
-            height: auto !important;
-            max-height: none !important;
+        /* Hide WordPress header/footer for clean display */
+        .aica-fullpage-mode .site-header,
+        .aica-fullpage-mode .site-footer {
+            display: none !important;
         }
     </style>
     <script>
-        // AGGRESSIVE: Remove ALL height constraints via JavaScript
+        // SCOPED JavaScript: Only modify Elementor containers, not React app
         (function() {
-            function forceRemoveHeightConstraints() {
-                // Add body class
+            function fixElementorContainers() {
                 document.body.classList.add("am-i-called-assessment-active");
 
-                // Find root
                 var root = document.getElementById("root");
                 if (!root) return;
 
-                // Add fullpage class to parent
-                var parent = root.closest(".entry-content, article, main");
-                if (parent) {
-                    parent.classList.add("aica-fullpage-mode");
-                }
-
-                // NUCLEAR: Traverse ALL parents and force remove constraints
-                var current = root;
+                // Only traverse UPWARDS to fix parent containers
+                // DO NOT touch anything inside #root
+                var current = root.parentElement;
                 var iterations = 0;
+
                 while (current && current !== document.documentElement && iterations < 50) {
-                    if (current.style) {
+                    // Only apply fixes to Elementor elements
+                    if (current.classList && (
+                        current.classList.contains("elementor-widget-shortcode") ||
+                        current.classList.contains("elementor-element") ||
+                        current.classList.contains("e-con") ||
+                        current.classList.contains("elementor-section") ||
+                        current.classList.contains("elementor-column")
+                    )) {
                         current.style.setProperty("height", "auto", "important");
                         current.style.setProperty("max-height", "none", "important");
                         current.style.setProperty("min-height", "0", "important");
                         current.style.setProperty("overflow", "visible", "important");
-                        current.style.setProperty("overflow-y", "visible", "important");
-                    }
-
-                    // Remove height-related attributes
-                    if (current.hasAttribute) {
-                        ["data-height", "data-min-height", "data-max-height"].forEach(function(attr) {
-                            if (current.hasAttribute(attr)) {
-                                current.removeAttribute(attr);
-                            }
-                        });
                     }
 
                     current = current.parentElement;
                     iterations++;
                 }
 
-                // Also force on Elementor-specific selectors
-                var elementorContainers = document.querySelectorAll(
-                    ".elementor-widget-shortcode, .e-con, .elementor-element, .elementor-container, " +
-                    ".elementor-section, .elementor-column, .elementor-widget-wrap"
-                );
-                elementorContainers.forEach(function(el) {
-                    if (el.contains(root) || root.contains(el)) {
-                        el.style.setProperty("height", "auto", "important");
-                        el.style.setProperty("max-height", "none", "important");
-                        el.style.setProperty("overflow", "visible", "important");
-                    }
-                });
+                // Add fullpage class
+                var parent = root.closest(".entry-content, article, main");
+                if (parent) {
+                    parent.classList.add("aica-fullpage-mode");
+                }
             }
 
-            // Run on DOM ready
+            // Run once on load
             if (document.readyState === "loading") {
-                document.addEventListener("DOMContentLoaded", forceRemoveHeightConstraints);
+                document.addEventListener("DOMContentLoaded", fixElementorContainers);
             } else {
-                forceRemoveHeightConstraints();
+                fixElementorContainers();
             }
 
-            // Run again after a short delay (in case Elementor modifies things)
-            setTimeout(forceRemoveHeightConstraints, 100);
-            setTimeout(forceRemoveHeightConstraints, 500);
-            setTimeout(forceRemoveHeightConstraints, 1000);
-
-            // Watch for changes and re-apply (Elementor editor mode)
-            if (window.MutationObserver) {
-                var observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.attributeName === "style") {
-                            forceRemoveHeightConstraints();
-                        }
-                    });
-                });
-
-                setTimeout(function() {
-                    var root = document.getElementById("root");
-                    if (root && root.parentElement) {
-                        observer.observe(root.parentElement, {
-                            attributes: true,
-                            attributeFilter: ["style", "class"],
-                            subtree: true
-                        });
-                    }
-                }, 1000);
-            }
+            // Run again after React loads
+            setTimeout(fixElementorContainers, 1000);
         })();
     </script>
     ';
