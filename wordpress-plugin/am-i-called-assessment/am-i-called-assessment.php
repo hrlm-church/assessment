@@ -3,7 +3,7 @@
  * Plugin Name: Am I Called Assessment
  * Plugin URI: https://revdaveharvey.com
  * Description: Dave Harvey's "Am I Called?" pastoral calling assessment tool. Use shortcode [am_i_called_assessment] to display the assessment on any page.
- * Version: 1.1.2
+ * Version: 1.1.4
  * Author: Digital Culture
  * Author URI: https://godigitalculture.com/
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AICA_VERSION', '1.1.2');
+define('AICA_VERSION', '1.1.4');
 define('AICA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AICA_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -52,7 +52,7 @@ function aica_enqueue_scripts() {
         $version
     );
 
-    // Enqueue main JavaScript (React app)
+    // Enqueue main JavaScript (React app) as module
     wp_enqueue_script(
         'aica-main-script',
         $dist_url . 'assets/index.js',
@@ -61,50 +61,18 @@ function aica_enqueue_scripts() {
         true // Load in footer
     );
 
-    // Enqueue additional scripts
-    wp_enqueue_script(
-        'aica-index-es',
-        $dist_url . 'assets/index.es.js',
-        array('aica-main-script'),
-        $version,
-        true
-    );
-
-    wp_enqueue_script(
-        'aica-html2canvas',
-        $dist_url . 'assets/html2canvas.esm.js',
-        array('aica-main-script'),
-        $version,
-        true
-    );
-
-    wp_enqueue_script(
-        'aica-purify',
-        $dist_url . 'assets/purify.es.js',
-        array('aica-main-script'),
-        $version,
-        true
-    );
-
-    // Add module type to scripts
-    add_filter('script_loader_tag', 'aica_add_type_attribute', 10, 3);
+    // Add module type and crossorigin to main script
+    add_filter('script_loader_tag', 'aica_add_module_type', 10, 3);
 }
 add_action('wp_enqueue_scripts', 'aica_enqueue_scripts');
 
 /**
- * Add type="module" to specific scripts
+ * Add type="module" and crossorigin to main script
  */
-function aica_add_type_attribute($tag, $handle, $src) {
-    $module_scripts = array(
-        'aica-index-es',
-        'aica-html2canvas',
-        'aica-purify'
-    );
-
-    if (in_array($handle, $module_scripts)) {
-        $tag = '<script type="module" src="' . esc_url($src) . '"></script>';
+function aica_add_module_type($tag, $handle, $src) {
+    if ($handle === 'aica-main-script') {
+        $tag = '<script type="module" crossorigin src="' . esc_url($src) . '"></script>';
     }
-
     return $tag;
 }
 
