@@ -102,9 +102,42 @@ function aica_add_type_attribute($tag, $handle, $src) {
  * Shortcode to render the assessment app
  */
 function aica_render_assessment() {
-    // Add custom styles to hide WordPress elements and make fullwidth
+    // Add custom styles to fix scrolling and layout issues
     $custom_css = '
-    <style>
+    <style id="aica-fix-styles">
+        /* CRITICAL: Fix Elementor and page builder overflow/height constraints */
+        .elementor-widget-shortcode,
+        .elementor-widget-shortcode > .elementor-widget-container,
+        .elementor-element,
+        .elementor-container,
+        .e-con,
+        .e-container {
+            overflow: visible !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+        }
+
+        /* React app root container - must be auto height */
+        #root {
+            overflow: visible !important;
+            height: auto !important;
+            min-height: 100vh !important;
+            max-height: none !important;
+            display: block !important;
+        }
+
+        /* Ensure all parent containers allow natural flow */
+        body.am-i-called-assessment-active .elementor,
+        body.am-i-called-assessment-active .elementor-section,
+        body.am-i-called-assessment-active .elementor-column,
+        body.am-i-called-assessment-active .elementor-column-wrap,
+        body.am-i-called-assessment-active .elementor-widget-wrap {
+            overflow: visible !important;
+            height: auto !important;
+            min-height: 0 !important;
+        }
+
         /* Hide WordPress header/footer for seamless experience */
         .aica-fullpage-mode .site-header,
         .aica-fullpage-mode .site-footer,
@@ -123,29 +156,48 @@ function aica_render_assessment() {
             margin: 0 !important;
         }
 
-        /* Container for React app */
-        #am-i-called-assessment-root {
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        /* Ensure body doesn\'t have extra padding when plugin is active */
-        body.aica-active {
+        /* Ensure body allows natural scroll */
+        body.am-i-called-assessment-active {
             margin: 0;
             padding: 0;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
+
+        /* Fix any theme-specific containers */
+        .am-i-called-assessment-active main,
+        .am-i-called-assessment-active article,
+        .am-i-called-assessment-active .entry-content {
+            overflow: visible !important;
+            height: auto !important;
         }
     </style>
     <script>
-        // Add class to body for styling
+        // Add class to body and fix container constraints
         document.addEventListener("DOMContentLoaded", function() {
-            document.body.classList.add("aica-active");
+            document.body.classList.add("am-i-called-assessment-active");
 
-            // Optional: Add fullpage mode class to parent elements
-            var container = document.getElementById("am-i-called-assessment-root");
-            if (container) {
-                var parent = container.closest(".entry-content, article, main");
+            // Find the React root
+            var root = document.getElementById("root");
+            if (root) {
+                // Add fullpage mode class to parent elements
+                var parent = root.closest(".entry-content, article, main");
                 if (parent) {
                     parent.classList.add("aica-fullpage-mode");
+                }
+
+                // Force remove any inline height styles on Elementor containers
+                var elementorContainers = root.closest(".elementor-widget-shortcode, .e-con, .elementor-element");
+                if (elementorContainers) {
+                    var current = root;
+                    while (current && current !== document.body) {
+                        if (current.style) {
+                            current.style.height = "auto";
+                            current.style.maxHeight = "none";
+                            current.style.overflow = "visible";
+                        }
+                        current = current.parentElement;
+                    }
                 }
             }
         });
