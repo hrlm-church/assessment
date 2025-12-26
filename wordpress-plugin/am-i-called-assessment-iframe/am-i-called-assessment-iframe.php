@@ -3,7 +3,7 @@
  * Plugin Name: Am I Called Assessment (iFrame)
  * Plugin URI: https://revdaveharvey.com
  * Description: Dave Harvey's "Am I Called?" pastoral calling assessment tool. Use shortcode [am_i_called_assessment] to display the assessment. iFrame version using Vercel deployment.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: Digital Culture
  * Author URI: https://godigitalculture.com/
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('AICA_IFRAME_VERSION', '2.0.0');
+define('AICA_IFRAME_VERSION', '2.0.1');
 define('AICA_IFRAME_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('AICA_IFRAME_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -172,14 +172,31 @@ function aica_iframe_render_assessment() {
             });
 
             // Hide loading indicator when iframe loads
-            window.addEventListener("load", function() {
-                setTimeout(function() {
-                    var loading = document.querySelector(".aica-loading");
-                    if (loading) {
-                        loading.style.display = "none";
-                    }
-                }, 1000);
-            });
+            function hideLoading() {
+                var loading = document.querySelector(".aica-loading");
+                if (loading) {
+                    loading.style.display = "none";
+                }
+            }
+
+            // Wait for iframe to be available, then listen to its load event
+            function setupIframeLoadListener() {
+                var iframe = document.querySelector(".aica-iframe-container iframe");
+                if (iframe) {
+                    iframe.addEventListener("load", function() {
+                        hideLoading();
+                    });
+                } else {
+                    // If iframe not found, try again in 100ms
+                    setTimeout(setupIframeLoadListener, 100);
+                }
+            }
+
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", setupIframeLoadListener);
+            } else {
+                setupIframeLoadListener();
+            }
         })();
     </script>
 
