@@ -90,7 +90,7 @@ function GettingStarted({ onNext, onBack }) {
                 { name: 'Shepherding', desc: 'Care and discipleship abilities' },
                 { name: 'Evangelism', desc: 'Gospel proclamation and outreach' },
                 { name: 'Leadership', desc: 'Vision casting and team building' },
-                { name: 'GCC Alignment', desc: 'Theological and methodological fit' }
+                { name: 'Theology/Ministry/Culture Alignment', desc: 'Theological and methodological fit' }
               ].map((dim, index) => (
                 <div key={index} className="flex items-start gap-3 pb-3 border-b border-[#F3F4F6] last:border-b-0 last:pb-0">
                   <svg className="w-5 h-5 text-[#F36233] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">

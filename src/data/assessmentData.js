@@ -5,14 +5,13 @@ export const assessmentCategories = [
     title: 'Are You Godly?',
     description: '',
     questions: [
-      'Do people see you as one who exhibits a personal hunger to pursue Christ through spiritual disciplines like prayer, study, fasting, and confession?',
+      'Do people see you as one who exhibits a personal hunger to pursue Christ through spiritual disciplines like prayer, Bible Study, Reading, and confession?',
       'Would those closest to you say they see clear and consistent patterns of humility in your life?',
       'Can you be counted upon to be patient, kind, and gracious in dealing with others?',
       'Would your pastor, physician and recent physical exams validate that you care for yourself physically and emotionally, and that you exercise self-control with food and alcohol?',
       'Do the leaders in your church generally view you as growing in your understanding and application of the gospel?',
       'If a church member looked at your finances, would they find a history of faithful financial giving to the local church?',
-      'In the last year, has anyone ascribed an unrighteous love of money to you, or suggested you are inordinately drawn towards power and influence? Are you respected at your job and in your community?',
-      'Do you possess a group of godly men with whom you are transparently accountable?'
+      'Do you possess a group of godly men with whom you are honest about your temptations? Would they say you are eager to hear their feedback and suggestions for improving your walk with Christ?'
     ],
     questionKeys: [
       'godliness_1',
@@ -21,8 +20,7 @@ export const assessmentCategories = [
       'godliness_4',
       'godliness_5',
       'godliness_6',
-      'godliness_7',
-      'godliness_8'
+      'godliness_7'
     ]
   },
   {
@@ -32,7 +30,7 @@ export const assessmentCategories = [
     questions: [
       'Do you experience consistent unity and alignment with your wife across the more significant marriage challenges (parenting, finances, life/family priorities, ministry)?',
       'Is the nurture, care for, and loving leadership of your wife clearly evident to your wife and to others?',
-      'Is your wife supporting your pursuit of church planting and does she recognize and prayerfully accept the claim it will make upon her?',
+      'Is your wife supporting your pursuit of ministry (planting or pastoring) and does she recognize and prayerfully accept the claim it will make upon her?',
       'Are you known as one who demonstrates leadership initiative in the spiritual life of your family?',
       'Would your wife and leaders say you apply loving discipline with your children without exasperating harshness, and in a manner that cultivates enduring relationships with them?',
       'When looking at debt and income, are you in a position to, if necessary, make financial sacrifices to start a church or step into a ministry role?',
@@ -83,12 +81,12 @@ export const assessmentCategories = [
     description: '(Psalm 78:72; Jer 3:15; 23:4; Ezek 34:7-24; Matt 9:36; John 10:1-16; Acts 20:28-32; Eph 4:11-16; 1 Peter 5:1-4)',
     questions: [
       'Are you known as possessing an aptitude for understanding people and ministering to their needs through wise application of Scripture?',
-      'Do you have a reputation for consistently encourages others and pointing out God\'s work in their lives?',
+      'Do you have a reputation for consistently encouraging others and pointing out God\'s work in their lives?',
       'Do you think you have an instinct to care for people in times of trial and crisis?',
       'Are people drawn to open up their lives and hurts with you?',
       'Can you point to specific fruit of you discipling other people towards spiritual growth?',
       'Are you known as one who will offer an honest opinion and, when necessary, lovingly admonish another person?',
-      'Are you able to discern touchpoints where the culture is influencing the church (identity, how people change, nature of the church, etc.) while wisely and pastorally redirecting people back to Scripture?'
+      'Are you known as someone who is able to discern touchpoints where the culture is influencing the church (sexual identity, secular psychology, soul formation, etc.) while wisely and pastorally redirecting people back to Scripture?'
     ],
     questionKeys: [
       'shepherding_1',
@@ -107,13 +105,13 @@ export const assessmentCategories = [
     questions: [
       'Do you exhibit a strong/growing understanding of your local community and culture within the place you want to plant or pastor?',
       'Can you point to recent examples of sharing the gospel with non-believers?',
-      'Do you see mission as not just establishing a local church, but reaching the lost in your new community?',
+      'Do you see mission as not just planting a local church, but reaching the lost in your new community?',
       'Are you known as a leader who invites people outside the church to connect with people and activities of the church?',
       'Can you point to a circle of non-believing friends right now?',
       'Do you have a reputation with those outside of the church (through your job, neighbors, school, etc.) that commends you to the role of church planter or pastor?',
       'Would your convictions prioritize the importance of building a local church ecosystem where multiplication (disciples, leaders, elders and churches) is a primary measure of health and flourishing?',
-      'Do you understand how to contextualize ministry to the place and people to which God has called you?',
-      'Does your orientation towards Scripture and mission enable you to see beyond your church or tribe and motivate you to play a part in reaching the lost in other nations?'
+      'Do you understand how to contextualize ministry to the place and people to which God may be calling you?',
+      'Do your convictions about mission enable you to see beyond your church or tribe and motivate you to pray, find church planters, or play a part in reaching the lost in other nations?'
     ],
     questionKeys: [
       'evangelism_1',
@@ -132,13 +130,13 @@ export const assessmentCategories = [
     title: 'Do You Lead Well?',
     description: '(Rom 2:6-7, 12:8; 2 Tim 1:7-14, 2:2; Col 4:6; Heb 12:1; Prov 28:1; 1 Cor 15:10; Eph 4:11-16)',
     questions: [
-      'Do you exhibit the capacity to inspire faith from others by casting vision?',
+      'Do you exhibit the ability to cast vision in a way that inspires faith in others?',
       'Are you known as one who establishes confidence and personal connection easily when interacting with others?',
       'Would your leaders say you exhibit patterns of steadfast, tenacious resilience?',
       'How would you rate yourself on conveying gospel-driven clarity, enthusiasm, and passion in your leadership?',
       'Are you known as one who can identify, prioritize, and address critical issues as a leader?',
       'Do you understand plurality and place a high value on building and experiencing a healthy eldership?',
-      'Are you effective at engaging others to get quality work done?',
+      'Can you constructively engage others to correct or improve performance and get quality work done?',
       'Do people know as someone who can make things simple and clear while also inspiring motivation in others?',
       'Is your gifting as a leader and sincere communicator recognized by the leaders of your church?'
     ],
@@ -155,18 +153,18 @@ export const assessmentCategories = [
     ]
   },
   {
-    id: 'gcc_alignment',
-    title: 'Do We Feel Like Family?',
+    id: 'ministry_alignment',
+    title: 'Theology/Ministry/Culture Alignment',
     description: '(Prov 17:17; John 13:34-35; Rom 12:10; 2 Cor 9; Eph 4:1-6,15; Heb 10:24; 1 Peter 4:8)',
     questions: [
       'Do you understand the biblical doctrine of interdependence and do you hold partnership between churches as a theological conviction?',
       'Do you affirm the need for churches to unite through the help of gifted extra-local leaders appointed to help church leaders plant churches?',
-      'Can you point to a relationship you have at present with a GCC leader or with a GCC church?',
-      'Do you believe you understand the culture of GCC and are you drawn to the leaders and fruit?',
-      'Have you had the opportunity to connect with other GCC pastors at GCC events?',
-      'Would others affirm that you possess a vison to both receive from and contribute to a Collective/Network?',
-      'After surveying GCC core values and the Attributes of a GCC church, are you more eager to explore planting with GCC?',
-      'Are you and your wife able to affirm the doctrinal positions of the GCC Statement of Faith?'
+      'Can you point to a relationship you have at present with a leader or church in the ministry you want to join or from whom you are seeking sponsorship?',
+      'Do you believe you understand the culture of this ministry and are you drawn to the leaders and fruit you see and experience among the leaders?',
+      'Have you had the opportunity to connect with other pastors in the ministry or attend any events run by the group?',
+      'Would those who know you well affirm your fit with this group and see your vison to both receive from and contribute to this ministry?',
+      'After surveying the ministries core values and statement of faith, are you more eager to explore planting or pastoring with them?',
+      'Are both you and your wife able to affirm the doctrinal positions of the ministry\'s creeds and/or Statement of Faith?'
     ],
     questionKeys: [
       'gcc_alignment_1',
@@ -201,7 +199,7 @@ export const interpretationGuide = {
         shepherding: 'Shadow an elder doing pastoral care; read one shepherding book this quarter.',
         evangelism: 'Build one new friendship with a non-Christian; share the gospel this month.',
         leadership: 'Lead a small team project; read a leadership book; ask for feedback.',
-        gcc_alignment: 'Attend a GCC event; schedule a call with a GCC pastor; explore the Statement of Faith.'
+        ministry_alignment: 'Attend a ministry event; schedule a call with a pastor in the ministry; explore their Statement of Faith.'
       }
     },
     moderate: {
