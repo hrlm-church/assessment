@@ -92,12 +92,6 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const handleNext = () => {
     if (currentCategoryIndex < totalCategories - 1) {
       setCurrentCategoryIndex(currentCategoryIndex + 1);
-      // Scroll to top of section
-      const nextSection = assessmentCategories[currentCategoryIndex + 1];
-      const element = document.getElementById(nextSection.id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
     } else {
       onComplete(responses);
     }
@@ -106,12 +100,6 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
   const handlePrevious = () => {
     if (currentCategoryIndex > 0) {
       setCurrentCategoryIndex(currentCategoryIndex - 1);
-      // Scroll to top of section
-      const prevSection = assessmentCategories[currentCategoryIndex - 1];
-      const element = document.getElementById(prevSection.id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
     }
   };
 
@@ -156,6 +144,11 @@ function Assessment({ assessmentId, initialResponses, onComplete, onBack }) {
       window.history.replaceState(null, '', `#${sectionId}`);
     }
   }, [currentCategoryIndex, currentCategory.id]);
+
+  // Scroll to top when section changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentCategoryIndex]);
 
   // Section label mapping (exact as specified)
   const sectionLabels = {
