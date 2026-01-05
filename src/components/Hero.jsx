@@ -54,8 +54,8 @@ function Hero({ onNext }) {
           </h1>
 
           {/* Subheading */}
-          <p className="mx-auto max-w-[600px] text-lg text-[#71717A] mb-8">
-            A 7-part discernment assessment rooted in Scripture and pastoral wisdom.
+          <p className="mx-auto max-w-[600px] text-xl font-medium text-[#F36233] mb-8">
+            A 7-part ministry-calling assessment rooted in Scripture and pastoral wisdom.
           </p>
 
           {/* CTA Row */}
